@@ -26,6 +26,7 @@
             top: 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            flex-wrap: wrap;
         }
 
         .navbar a.logo {
@@ -55,6 +56,13 @@
         .navbar a:hover {
             background-color: #6B3A0E; /* Darker brown */
             color: #FFDAB9; /* Light peach */
+        }
+
+        .navbar .menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            width: auto;
         }
 
         /* Hero Section */
@@ -140,6 +148,17 @@
                 font-size: 16px;
                 padding: 12px 10px;
             }
+
+            .navbar .menu {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar a {
+                width: 100%;
+                text-align: left;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -151,10 +170,12 @@
             <img src="logo.png" alt="Nigel's Tea">
             Nigel's Tea
         </a>
-        <a href="#">Home</a>
-        <a href="#">Games</a>
-        <a href="#">About Us</a>
-        <a href="#">What We're Working On</a>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">Games</a>
+            <a href="#">Projects</a>
+            <a href="#">About Us</a>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -193,16 +214,13 @@
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
             <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
             <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             
         </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-        © 2023 Nigel's Tea. All rights reserved.
+        © 2025 Nigel's Tea. All rights reserved.
     </div>
 
 </body>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nigel's Tea - Tea Maze Adventure</title>
+    <link rel="icon" href="../logo.png" type="image/png">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5DC; /* Beige background */
+            color: #4B2E2A; /* Dark brown text */
+            /* Hide scrollbar for IE, Edge, and Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Hide scrollbar for Chrome, Safari, and Opera */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #8B4513; /* Saddle brown */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 10px;
+            position: fixed;
+            width: calc(100% - 40px);
+            top: 0;
+            left: 0;
+            margin: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .navbar a.logo {
+            display: flex;
+            align-items: center;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto;
+        }
+
+        .navbar a.logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .navbar .menu {
+            display: flex;
+        }
+
+        .navbar .menu a {
+            color: #FFFFFF;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 0 5px;
+        }
+
+        .navbar .menu a:hover {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        /* Active Link Styling */
+        .navbar .menu a.active {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        /* Game Container */
+        .game-container {
+            margin-top: 100px; /* Adjust for navbar height */
+            padding: 20px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Canvas Styling */
+        #gameCanvas {
+            border: 5px solid #8B4513;
+            border-radius: 10px;
+            background-color: #FFFFFF;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #8B4513;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar .menu {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .navbar .menu a {
+                width: 100%;
+                text-align: left;
+                margin: 5px 0;
+            }
+
+            .navbar a.logo {
+                margin-bottom: 10px;
+            }
+
+            .game-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="../index.html" class="logo">
+            <img src="../logo.png" alt="Nigel's Tea">
+            Nigel's Tea
+        </a>
+        <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="../games.html" class="active">Games</a>
+            <a href="../projects.html">Projects</a>
+            <a href="../about.html">About Us</a>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <h1 class="game-title">Tea Maze Adventure</h1>
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        <p id="gameStatus" style="font-size: 18px; margin-top: 20px;"></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 Nigel's Tea. All rights reserved.
+    </div>
+
+    <!-- Game Script -->
+    <script>
+        // Canvas and Context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Settings
+        const tileCount = 20; // 20x20 grid
+        const tileSize = canvas.width / tileCount;
+
+        // Player Object
+        const player = {
+            x: 0,
+            y: 0,
+            color: '#4B2E2A',
+        };
+
+        // Teapot Position
+        const teapot = {
+            x: tileCount - 1,
+            y: tileCount - 1,
+            color: '#8B4513',
+        };
+
+        // Tea Bags Array
+        let teaBags = [];
+
+        // Maze Grid
+        let maze = [];
+
+        // Game Status
+        let collectedTeaBags = 0;
+        let totalTeaBags = Math.floor(Math.random() * 20) + 1; // 1 to 20
+
+        // Initialize Game
+        function initGame() {
+            generateMaze();
+            placeTeaBags();
+            drawGame();
+            document.addEventListener('keydown', keyDownHandler);
+            updateStatus();
+        }
+
+        // Generate Maze using Recursive Division Algorithm
+        function generateMaze() {
+            // Initialize maze grid with walls
+            for (let y = 0; y < tileCount; y++) {
+                maze[y] = [];
+                for (let x = 0; x < tileCount; x++) {
+                    maze[y][x] = 1; // Wall
+                }
+            }
+
+            // Recursive Division
+            divide(0, 0, tileCount, tileCount);
+
+            // Set player and teapot positions to be empty
+            maze[player.y][player.x] = 0;
+            maze[teapot.y][teapot.x] = 0;
+        }
+
+        function divide(x, y, width, height) {
+            if (width <= 2 || height <= 2) return;
+
+            let horizontal = Math.random() > 0.5;
+
+            if (width > height) {
+                horizontal = false;
+            } else if (height > width) {
+                horizontal = true;
+            }
+
+            if (horizontal) {
+                // Horizontal division
+                let divideY = y + Math.floor(Math.random() * (height - 2)) + 1;
+                for (let i = x; i < x + width; i++) {
+                    maze[divideY][i] = 1;
+                }
+                let passageX = x + Math.floor(Math.random() * width);
+                maze[divideY][passageX] = 0;
+
+                divide(x, y, width, divideY - y);
+                divide(x, divideY + 1, width, y + height - divideY - 1);
+            } else {
+                // Vertical division
+                let divideX = x + Math.floor(Math.random() * (width - 2)) + 1;
+                for (let i = y; i < y + height; i++) {
+                    maze[i][divideX] = 1;
+                }
+                let passageY = y + Math.floor(Math.random() * height);
+                maze[passageY][divideX] = 0;
+
+                divide(x, y, divideX - x, height);
+                divide(divideX + 1, y, x + width - divideX - 1, height);
+            }
+        }
+
+        // Place Tea Bags Randomly
+        function placeTeaBags() {
+            let placed = 0;
+            while (placed < totalTeaBags) {
+                let x = Math.floor(Math.random() * tileCount);
+                let y = Math.floor(Math.random() * tileCount);
+                if (maze[y][x] === 0 && !(x === player.x && y === player.y) && !(x === teapot.x && y === teapot.y)) {
+                    teaBags.push({ x: x, y: y });
+                    placed++;
+                }
+            }
+        }
+
+        // Draw Game Elements
+        function drawGame() {
+            // Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Maze
+            for (let y = 0; y < tileCount; y++) {
+                for (let x = 0; x < tileCount; x++) {
+                    if (maze[y][x] === 1) {
+                        ctx.fillStyle = '#D2B48C'; // Tan walls
+                        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    }
+                }
+            }
+
+            // Draw Tea Bags
+            teaBags.forEach(bag => {
+                ctx.fillStyle = '#DAA520'; // Golden tea bags
+                ctx.beginPath();
+                ctx.arc(bag.x * tileSize + tileSize / 2, bag.y * tileSize + tileSize / 2, tileSize / 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw Teapot
+            ctx.fillStyle = teapot.color;
+            ctx.fillRect(teapot.x * tileSize, teapot.y * tileSize, tileSize, tileSize);
+
+            // Draw Player
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x * tileSize, player.y * tileSize, tileSize, tileSize);
+        }
+
+        // Handle Keyboard Input
+        function keyDownHandler(e) {
+            let moveX = 0;
+            let moveY = 0;
+
+            if (e.key === 'ArrowUp' || e.key === 'w') moveY = -1;
+            if (e.key === 'ArrowDown' || e.key === 's') moveY = 1;
+            if (e.key === 'ArrowLeft' || e.key === 'a') moveX = -1;
+            if (e.key === 'ArrowRight' || e.key === 'd') moveX = 1;
+
+            let newX = player.x + moveX;
+            let newY = player.y + moveY;
+
+            // Check boundaries and walls
+            if (
+                newX >= 0 && newX < tileCount &&
+                newY >= 0 && newY < tileCount &&
+                maze[newY][newX] === 0
+            ) {
+                player.x = newX;
+                player.y = newY;
+
+                // Check for tea bag collection
+                for (let i = 0; i < teaBags.length; i++) {
+                    if (teaBags[i].x === player.x && teaBags[i].y === player.y) {
+                        teaBags.splice(i, 1);
+                        collectedTeaBags++;
+                        updateStatus();
+                        break;
+                    }
+                }
+
+                // Check if player reaches teapot
+                if (player.x === teapot.x && player.y === teapot.y) {
+                    if (collectedTeaBags === totalTeaBags) {
+                        document.getElementById('gameStatus').textContent = 'You delivered all the tea bags! Well done!';
+                        document.removeEventListener('keydown', keyDownHandler);
+                    } else {
+                        document.getElementById('gameStatus').textContent = `You need to collect all the tea bags before delivering them! Tea bags remaining: ${totalTeaBags - collectedTeaBags}`;
+                    }
+                }
+
+                drawGame();
+            }
+        }
+
+        // Update Game Status
+        function updateStatus() {
+            document.getElementById('gameStatus').textContent = `Tea bags collected: ${collectedTeaBags}/${totalTeaBags}`;
+        }
+
+        // Start the Game
+        initGame();
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Nigel's Tea - Home</title>
+    <link rel="icon" href="logo.png" type="image/png">
     <style>
         /* Global Styles */
         body {
@@ -18,7 +19,13 @@
             overflow: hidden;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 10px 20px;
+            border-radius: 10px; /* Rounded corners */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
 
         .navbar a.logo {
@@ -42,6 +49,7 @@
             padding: 14px 20px;
             text-decoration: none;
             font-size: 18px;
+            border-radius: 10px; /* Rounded corners */
         }
 
         .navbar a:hover {
@@ -51,9 +59,13 @@
 
         /* Hero Section */
         .hero {
-            background-color: #D2B48C; /* Tan */
+            background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
             padding: 100px 20px;
             text-align: center;
+            margin-top: 60px; /* Adjust for navbar height */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px;
         }
 
         .hero h1 {
@@ -83,6 +95,26 @@
             color: #FFDAB9; /* Light peach */
         }
 
+        /* Content Section */
+        .content {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .content p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .content .lorem {
+            background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         /* Footer */
         .footer {
             background-color: #8B4513; /* Saddle brown */
@@ -90,6 +122,8 @@
             text-align: center;
             padding: 20px;
             font-size: 16px;
+            border-radius: 10px; /* Rounded corners */
+            margin: 20px;
         }
 
         /* Responsive Design */
@@ -114,7 +148,6 @@
     <!-- Navigation Bar -->
     <div class="navbar">
         <a href="#" class="logo">
-            <!-- Placeholder for Logo -->
             <img src="logo.png" alt="Nigel's Tea">
             Nigel's Tea
         </a>
@@ -128,14 +161,48 @@
     <div class="hero">
         <h1>Welcome to Nigel's Tea</h1>
         <p>
-            Dive into a world of delightful games and adventures. From interactive journeys to exciting challenges, we have something brewing for every tea enthusiast.
+            Dive into a world of delightful tea-themed games and adventures. From interactive journeys to exciting challenges, we have something brewing for every tea enthusiast.
         </p>
         <a href="#" class="cta-button">Explore Our Games</a>
     </div>
 
+    <!-- Content Section -->
+    <div class="content">
+        <div class="lorem">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            
+        </div>
+    </div>
+
     <!-- Footer -->
     <div class="footer">
-        © 2025 Nigel's Tea. All rights reserved.
+        © 2023 Nigel's Tea. All rights reserved.
     </div>
 
 </body>

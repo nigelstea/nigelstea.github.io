@@ -6,6 +6,10 @@
     <link rel="icon" href="logo.png" type="image/png">
     <style>
         /* Global Styles */
+        * {
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,8 +34,10 @@
             padding: 10px 20px;
             border-radius: 10px; /* Rounded corners */
             position: fixed;
-            width: 100%;
+            width: calc(100% - 40px); /* Adjust width to accommodate border-radius */
             top: 0;
+            left: 0;
+            margin: 10px 20px; /* Margin to fit the screen and show rounded corners */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             flex-wrap: wrap;
@@ -52,25 +58,23 @@
             margin-right: 10px;
         }
 
-        .navbar a {
+        .navbar .menu {
+            display: flex;
+        }
+
+        .navbar .menu a {
             color: #FFFFFF;
             text-align: center;
             padding: 14px 20px;
             text-decoration: none;
             font-size: 18px;
             border-radius: 10px; /* Rounded corners */
+            margin: 0 5px; /* Uniform horizontal spacing */
         }
 
-        .navbar a:hover {
+        .navbar .menu a:hover {
             background-color: #6B3A0E; /* Darker brown */
             color: #FFDAB9; /* Light peach */
-        }
-
-        .navbar .menu {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            width: auto;
         }
 
         /* Hero Section */
@@ -78,7 +82,7 @@
             background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
             padding: 100px 20px;
             text-align: center;
-            margin-top: 60px; /* Adjust for navbar height */
+            margin-top: 100px; /* Adjust for navbar height */
             border-radius: 10px; /* Rounded corners */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 20px;
@@ -144,6 +148,22 @@
 
         /* Responsive Design */
         @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar .menu {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .navbar .menu a {
+                width: 100%;
+                text-align: left;
+                margin: 5px 0;
+            }
+
             .hero h1 {
                 font-size: 36px;
             }
@@ -152,20 +172,8 @@
                 font-size: 20px;
             }
 
-            .navbar a {
-                font-size: 16px;
-                padding: 12px 10px;
-            }
-
-            .navbar .menu {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .navbar a {
-                width: 100%;
-                text-align: left;
-                padding: 10px 20px;
+            .navbar a.logo {
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -198,10 +206,7 @@
     <!-- Content Section -->
     <div class="content">
         <div class="lorem">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-            <!-- Add more content as needed -->
+            <!-- Your content here -->
         </div>
     </div>
 

@@ -160,6 +160,20 @@
             margin-top: 20px;
         }
 
+        /* Game Timer */
+        #gameTimer {
+            font-size: 18px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Rating Display */
+        #gameRating {
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
         /* Footer (Hidden for full-screen game) */
         .footer {
             display: none;
@@ -225,6 +239,10 @@
 
             <!-- Game Status -->
             <p id="gameStatus">Tea bags collected: 0/0</p>
+            <!-- Game Timer -->
+            <p id="gameTimer">Time: 00:00</p>
+            <!-- Game Rating -->
+            <p id="gameRating"></p>
         </div>
     </div>
 
@@ -262,6 +280,11 @@
         let collectedTeaBags = 0;
         let totalTeaBags = Math.floor(Math.random() * 20) + 1; // 1 to 20
 
+        // Stopwatch Variables
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+
         // Initialize Game
         function initGame() {
             generateMaze();
@@ -274,6 +297,33 @@
             document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
             document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
             updateStatus();
+            startTimer();
+        }
+
+        // Start the Stopwatch
+        function startTimer() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTimer, 100);
+        }
+
+        // Update the Stopwatch Display
+        function updateTimer() {
+            elapsedTime = Date.now() - startTime;
+            const time = formatTime(elapsedTime);
+            document.getElementById('gameTimer').textContent = `Time: ${time}`;
+        }
+
+        // Format Time as MM:SS
+        function formatTime(time) {
+            const totalSeconds = Math.floor(time / 1000);
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        // Stop the Stopwatch
+        function stopTimer() {
+            clearInterval(timerInterval);
         }
 
         // Resize Canvas Based on Window Size
@@ -430,9 +480,13 @@
                 // Check if player reaches teapot
                 if (player.x === teapot.x && player.y === teapot.y) {
                     if (collectedTeaBags === totalTeaBags) {
+                        stopTimer();
+                        const time = formatTime(elapsedTime);
                         document.getElementById('gameStatus').textContent = 'You delivered all the tea bags! Well done!';
+                        document.getElementById('gameTimer').textContent = `Total Time: ${time}`;
                         document.removeEventListener('keydown', keyDownHandler);
                         disableControls();
+                        displayRating();
                     } else {
                         document.getElementById('gameStatus').textContent = `You need to collect all the tea bags before delivering them! Tea bags remaining: ${totalTeaBags - collectedTeaBags}`;
                     }
@@ -440,6 +494,48 @@
 
                 drawGame();
             }
+        }
+
+        // Display Star Rating
+        function displayRating() {
+            const totalSeconds = Math.floor(elapsedTime / 1000);
+            const rating = calculateStarRating(totalSeconds, totalTeaBags);
+            document.getElementById('gameRating').textContent = `Your Rating: ${rating}`;
+        }
+
+        // Calculate Star Rating Based on Time and Tea Bags
+        function calculateStarRating(timeInSeconds, teaBags) {
+            // Define base time per tea bag (in seconds)
+            const baseTimePerBag = 10; // Adjust as needed
+
+            // Calculate maximum time for 5 stars
+            const maxTime = teaBags * baseTimePerBag;
+
+            // Define thresholds for star ratings
+            const thresholds = {
+                5: maxTime * 0.6, // 60% of max time
+                4: maxTime * 0.8, // 80%
+                3: maxTime,       // 100%
+                2: maxTime * 1.2, // 120%
+                1: maxTime * 1.5  // 150%
+            };
+
+            // Determine rating
+            let stars = 1;
+            if (timeInSeconds <= thresholds[5]) {
+                stars = 5;
+            } else if (timeInSeconds <= thresholds[4]) {
+                stars = 4;
+            } else if (timeInSeconds <= thresholds[3]) {
+                stars = 3;
+            } else if (timeInSeconds <= thresholds[2]) {
+                stars = 2;
+            }
+
+            // Generate star emojis
+            const starEmojis = '⭐'.repeat(stars);
+
+            return starEmojis;
         }
 
         // Disable On-Screen Controls

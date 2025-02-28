@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nigel's Tea - Games</title>
+    <title>Nigel's Tea - Tea Jump</title>
     <link rel="icon" href="../logo.png" type="image/png">
     <style>
         /* Global Styles */
@@ -136,6 +136,7 @@
             background-color: #F5F5DC;
             border: 2px solid #8B4513;
             border-radius: 10px;
+            margin: 20px auto; /* Center the canvas and add margin */
         }
 
         /* Footer */
@@ -207,10 +208,11 @@
     </div>
 
     
+
     <!-- Runner Game Section -->
     <div class="runner-game-section">
         <h1>Tea Jump</h1>
-        <canvas id="gameCanvas" width="800" height="200"></canvas>
+        <canvas id="gameCanvas" width="800" height="250"></canvas>
         <p id="gameInstructions">Press Space or tap to jump. Avoid soft drinks and people!</p>
     </div>
 
@@ -228,7 +230,7 @@
         // Game variables
         let tea = {
             x: 50,
-            y: 150,
+            y: canvas.height - 70, // Adjusted to account for new canvas height
             width: 50,
             height: 50,
             dy: 0,
@@ -246,6 +248,9 @@
         let score = 0;
         let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
         let lastSpeedIncreaseTime = 0;
+
+        // Adjust the ground level to add padding
+        const groundY = canvas.height - 20; // 20 pixels from the bottom
 
         // Handle user input
         document.addEventListener('keydown', function(event) {
@@ -275,16 +280,20 @@
             // Update tea position
             tea.y += tea.dy;
             tea.dy += tea.gravity;
-            if (tea.y > 150) {
-                tea.y = 150;
+            if (tea.y > groundY - tea.height) {
+                tea.y = groundY - tea.height;
                 tea.dy = 0;
                 tea.isJumping = false;
             }
 
+            // Draw ground
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, groundY, canvas.width, 2);
+
             // Draw tea emoji
             ctx.font = '48px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText(tea.emoji, tea.x + tea.width / 2, tea.y + tea.height);
+            ctx.fillText(tea.emoji, tea.x + tea.width / 2, tea.y + tea.height - 5);
 
             // Handle obstacles
             if (timestamp - lastObstacleTime > obstacleFrequency) {
@@ -295,7 +304,7 @@
             obstacles.forEach(function(obstacle, index) {
                 obstacle.x -= gameSpeed;
                 ctx.font = '48px Arial';
-                ctx.fillText(obstacle.emoji, obstacle.x + obstacle.width / 2, obstacle.y + obstacle.height);
+                ctx.fillText(obstacle.emoji, obstacle.x + obstacle.width / 2, obstacle.y + obstacle.height - 5);
 
                 // Collision detection
                 if (isColliding(tea, obstacle)) {
@@ -332,7 +341,7 @@
             let obstacleHeight = 50;
             let obstacle = {
                 x: canvas.width,
-                y: 150,
+                y: groundY - obstacleHeight,
                 width: obstacleWidth,
                 height: obstacleHeight,
                 emoji: obstacleEmoji

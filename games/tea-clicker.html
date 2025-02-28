@@ -111,7 +111,7 @@
         .kettle {
             width: 100%;
             height: 100%;
-            background-image: url('../images/kettle.png'); /* Provide a kettle image */
+            background-image: url('../images/kettle.png'); /* Ensure this path is correct */
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -333,9 +333,220 @@
 
     <!-- Game Script -->
     <script>
-        // JavaScript code remains the same as before
+        let teaCount = 0;
+        let teaPerClick = 1;
 
-        // [JavaScript code here]
+        let upgrades = [
+            {
+                name: 'Better Kettle',
+                emoji: '🫖',
+                description: 'Improves your kettle to brew more tea per click.',
+                baseCost: 10,
+                cost: 10,
+                amount: 0,
+                teaPerClick: 1,
+            },
+            {
+                name: 'Tea Plantation',
+                emoji: '🌱',
+                description: 'Own a tea plantation to produce tea automatically.',
+                baseCost: 100,
+                cost: 100,
+                amount: 0,
+                teaPerSecond: 1,
+            },
+            {
+                name: 'Tea Factory',
+                emoji: '🏭',
+                description: 'Build a factory to mass-produce tea.',
+                baseCost: 1000,
+                cost: 1000,
+                amount: 0,
+                teaPerSecond: 10,
+            },
+            {
+                name: 'Tea Empire',
+                emoji: '🌐',
+                description: 'Expand your business into a tea empire.',
+                baseCost: 10000,
+                cost: 10000,
+                amount: 0,
+                teaPerSecond: 100,
+            },
+            {
+                name: 'Tea Robot',
+                emoji: '🤖',
+                description: 'Automate tea production with robots.',
+                baseCost: 50000,
+                cost: 50000,
+                amount: 0,
+                teaPerSecond: 500,
+            },
+            {
+                name: 'Quantum Brewer',
+                emoji: '⚛️',
+                description: 'Use quantum mechanics to brew tea instantly.',
+                baseCost: 250000,
+                cost: 250000,
+                amount: 0,
+                teaPerSecond: 2000,
+            },
+            {
+                name: 'Interstellar Trade',
+                emoji: '🚀',
+                description: 'Trade tea across galaxies for massive profits.',
+                baseCost: 1000000,
+                cost: 1000000,
+                amount: 0,
+                teaPerSecond: 10000,
+            },
+            {
+                name: 'Time Machine',
+                emoji: '⌛',
+                description: 'Manipulate time to brew infinite tea.',
+                baseCost: 5000000,
+                cost: 5000000,
+                amount: 0,
+                teaPerSecond: 50000,
+            },
+            // Add more upgrades as desired
+        ];
+
+        function brewTea() {
+            teaCount += teaPerClick;
+            updateTeaCount();
+            showFloatingText('+' + teaPerClick);
+        }
+
+        function updateTeaCount() {
+            document.getElementById('teaCount').textContent = Math.floor(teaCount) + ' Cups of Tea';
+            updateTeaPerSecond();
+        }
+
+        function updateTeaPerSecond() {
+            let totalTeaPerSecond = upgrades.reduce((sum, upgrade) => {
+                return sum + (upgrade.teaPerSecond || 0) * upgrade.amount;
+            }, 0);
+            document.getElementById('teaPerSecond').textContent = 'per second: ' + totalTeaPerSecond;
+        }
+
+        function buyUpgrade(index) {
+            let upgrade = upgrades[index];
+            if (teaCount >= upgrade.cost) {
+                teaCount -= upgrade.cost;
+                upgrade.amount++;
+                if (upgrade.teaPerClick) {
+                    teaPerClick += upgrade.teaPerClick;
+                }
+                upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.amount));
+                updateUpgrades();
+                updateTeaCount();
+            }
+        }
+
+        function updateUpgrades() {
+            let upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = '';
+            upgrades.forEach((upgrade, index) => {
+                let upgradeDiv = document.createElement('div');
+                upgradeDiv.className = 'upgrade';
+                upgradeDiv.onclick = () => buyUpgrade(index);
+
+                let headerDiv = document.createElement('div');
+                headerDiv.className = 'upgrade-header';
+
+                let emojiDiv = document.createElement('div');
+                emojiDiv.className = 'upgrade-emoji';
+                emojiDiv.textContent = upgrade.emoji;
+
+                let nameDiv = document.createElement('div');
+                nameDiv.className = 'upgrade-name';
+                nameDiv.textContent = upgrade.name + ' (' + upgrade.amount + ')';
+
+                let costDiv = document.createElement('div');
+                costDiv.className = 'upgrade-cost';
+                costDiv.textContent = 'Cost: ' + upgrade.cost;
+
+                // Tooltip for description
+                let descriptionDiv = document.createElement('div');
+                descriptionDiv.className = 'upgrade-description';
+                descriptionDiv.textContent = upgrade.description;
+
+                headerDiv.appendChild(emojiDiv);
+                headerDiv.appendChild(nameDiv);
+
+                upgradeDiv.appendChild(headerDiv);
+                upgradeDiv.appendChild(costDiv);
+                upgradeDiv.appendChild(descriptionDiv);
+
+                upgradesDiv.appendChild(upgradeDiv);
+            });
+        }
+
+        function autoBrew() {
+            upgrades.forEach(upgrade => {
+                if (upgrade.teaPerSecond) {
+                    teaCount += (upgrade.teaPerSecond * upgrade.amount) / 10; // Divide by 10 for 100ms intervals
+                }
+            });
+            updateTeaCount();
+        }
+
+        // Show Floating Text Animation
+        function showFloatingText(text) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            const kettleContainer = document.querySelector('.kettle-container');
+            kettleContainer.appendChild(floatingText);
+
+            // Position the text randomly within the kettle container
+            floatingText.style.left = Math.random() * 80 + 'px'; // Adjust as needed
+            floatingText.style.top = '150px'; // Adjust as needed
+
+            setTimeout(() => {
+                kettleContainer.removeChild(floatingText);
+            }, 1000);
+        }
+
+        // Save Game Function
+        function saveGame() {
+            const gameState = {
+                teaCount: teaCount,
+                teaPerClick: teaPerClick,
+                upgrades: upgrades,
+            };
+            const gameStateStr = JSON.stringify(gameState);
+            const blob = new Blob([gameStateStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tea_clicker_save.teaclick';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Load Game Function
+        function loadGame(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const gameState = JSON.parse(e.target.result);
+                        teaCount = gameState.teaCount;
+                        teaPerClick = gameState.teaPerClick;
+                        upgrades = gameState.upgrades;
+                        updateUpgrades();
+                        updateTeaCount();
+                    } catch (err) {
+                        alert('Failed to load game. The file may be corrupt or invalid.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
 
         // Start the game loop
         setInterval(autoBrew, 100); // 100ms intervals

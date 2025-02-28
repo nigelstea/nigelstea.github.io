@@ -78,7 +78,7 @@
             margin-top: 80px; /* Adjust for navbar height */
             display: flex;
             height: calc(100% - 80px);
-            overflow: hidden; /* Prevent scrolling in main content */
+            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         /* Sidebar */
@@ -123,7 +123,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden; /* Prevent scrolling in main content */
+            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         .kettle-container {
@@ -159,6 +159,7 @@
             border-radius: 10px;
             border: 1px solid #8B4513; /* Saddle brown border */
             cursor: pointer;
+            z-index: 1; /* Set a higher z-index */
         }
 
         .upgrade:hover {
@@ -186,27 +187,37 @@
         }
 
         /* Tooltip Styling */
-        .tooltip {
-            position: absolute;
-            z-index: 99999; /* Ensure tooltip appears over all other elements */
+        .upgrade-description {
+            visibility: hidden;
+            width: 200px;
             background-color: #8B4513;
             color: #FFFFFF;
-            padding: 8px;
-            border-radius: 8px;
             text-align: center;
-            width: 200px;
-            pointer-events: none; /* Ensure tooltip doesn't interfere with mouse events */
+            border-radius: 8px;
+            padding: 8px;
+            position: absolute;
+            z-index: 9999; /* Ensure tooltip appears over all other elements */
+            bottom: 120%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .tooltip::after {
+        .upgrade-description::after {
             content: "";
             position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
             border-width: 8px;
             border-style: solid;
             border-color: #8B4513 transparent transparent transparent;
-            bottom: 100%;
-            left: 50%;
-            margin-left: -8px;
+        }
+
+        .upgrade:hover .upgrade-description {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* Tea Per Second Display */
@@ -289,6 +300,19 @@
 
             .save-load-buttons button {
                 margin: 5px 0;
+            }
+
+            /* Adjust tooltip positioning for mobile */
+            .upgrade-description {
+                bottom: auto;
+                top: 110%;
+                left: 50%;
+                margin-left: -100px;
+            }
+
+            .upgrade-description::after {
+                top: -16px;
+                border-color: transparent transparent #8B4513 transparent;
             }
         }
     </style>
@@ -415,8 +439,6 @@
             // Add more upgrades as desired
         ];
 
-        let tooltipDiv; // Global variable for the tooltip
-
         function brewTea() {
             teaCount += teaPerClick;
             updateTeaCount();
@@ -472,66 +494,21 @@
                 costDiv.className = 'upgrade-cost';
                 costDiv.textContent = 'Cost: ' + upgrade.cost;
 
+                // Tooltip for description
+                let descriptionDiv = document.createElement('div');
+                descriptionDiv.className = 'upgrade-description';
+                descriptionDiv.textContent = upgrade.description;
+
                 headerDiv.appendChild(emojiDiv);
                 headerDiv.appendChild(nameDiv);
 
                 upgradeDiv.appendChild(headerDiv);
                 upgradeDiv.appendChild(costDiv);
-
-                // Add event listeners for tooltip
-                upgradeDiv.addEventListener('mouseenter', (e) => showTooltip(e, upgrade));
-                upgradeDiv.addEventListener('mouseleave', hideTooltip);
+                upgradeDiv.appendChild(descriptionDiv);
 
                 upgradesDiv.appendChild(upgradeDiv);
             });
         }
-
-        function showTooltip(event, upgrade) {
-            // Create tooltip element
-            tooltipDiv = document.createElement('div');
-            tooltipDiv.className = 'tooltip';
-            tooltipDiv.textContent = upgrade.description;
-
-            // Append to body
-            document.body.appendChild(tooltipDiv);
-
-            // Position tooltip
-            positionTooltip(event);
-        }
-
-        function hideTooltip() {
-            if (tooltipDiv) {
-                document.body.removeChild(tooltipDiv);
-                tooltipDiv = null;
-            }
-        }
-
-        function positionTooltip(event) {
-            if (tooltipDiv) {
-                const rect = event.target.getBoundingClientRect();
-                const tooltipRect = tooltipDiv.getBoundingClientRect();
-
-                let top = rect.top - tooltipRect.height - 10; // 10px gap
-                let left = rect.left + (rect.width - tooltipRect.width) / 2;
-
-                // If tooltip goes above viewport, place it below the element
-                if (top < 0) {
-                    top = rect.bottom + 10;
-                    tooltipDiv.style.transform = 'translateY(0%)';
-                    tooltipDiv.querySelector('::after').style.transform = 'rotate(180deg)';
-                }
-
-                tooltipDiv.style.left = left + 'px';
-                tooltipDiv.style.top = top + window.scrollY + 'px';
-            }
-        }
-
-        // Update tooltip position on mouse move
-        document.addEventListener('mousemove', (e) => {
-            if (tooltipDiv) {
-                positionTooltip(e);
-            }
-        });
 
         function autoBrew() {
             upgrades.forEach(upgrade => {

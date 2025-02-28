@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial', sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
             overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -76,7 +76,7 @@
         /* Games Section */
         .games-section {
             background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
-            padding: 60px 20px; /* Adjusted padding */
+            padding: 60px 20px;
             text-align: center;
             margin-top: 100px; /* Adjust for navbar height */
             border-radius: 10px;
@@ -116,8 +116,8 @@
 
         /* Runner Game Section */
         .runner-game-section {
-            background-color: rgba(210, 180, 140, 0.9); /* Match the games section */
-            padding: 60px 20px; /* Adjusted padding */
+            background-color: rgba(210, 180, 140, 0.9);
+            padding: 60px 20px;
             text-align: center;
             margin: 20px;
             border-radius: 10px;
@@ -143,7 +143,7 @@
             background-color: #8B4513;
             color: #FFFFFF;
             text-align: center;
-            padding: 20px; /* Footer padding */
+            padding: 20px;
             font-size: 16px;
             border-radius: 10px;
             margin: 20px;
@@ -181,7 +181,7 @@
             }
 
             .runner-game-section {
-                padding: 40px 10px; /* Adjusted for responsive */
+                padding: 40px 10px;
             }
 
             .runner-game-section h1 {
@@ -206,13 +206,11 @@
         </div>
     </div>
 
- 
-
     <!-- Runner Game Section -->
     <div class="runner-game-section">
         <h1>Tea Jump</h1>
         <canvas id="gameCanvas" width="800" height="200"></canvas>
-        <p id="gameInstructions">Press Space or tap to jump. Avoid soft drinks and baristas!</p>
+        <p id="gameInstructions">Press Space or tap to jump. Avoid soft drinks and people!</p>
     </div>
 
     <!-- Footer -->
@@ -235,7 +233,8 @@
             dy: 0,
             gravity: 0.5,
             jumpStrength: -10,
-            isJumping: false
+            isJumping: false,
+            emoji: '🍵'
         };
 
         let obstacles = [];
@@ -244,16 +243,6 @@
         let gameSpeed = 5;
         let gameOver = false;
         let score = 0;
-
-        // Load emoji images
-        const teaImg = new Image();
-        teaImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABdElEQVRoge2Z7U3DMBCFfxhaEVxIKbsAPGFY6BhVggI00AV1Agg64kQqZIyBJIlJIdKHwpCNpj2VA0Cgy9uxgm/Hb/Pp5dk+lGM+SM9IdKAnCQIYB6hl81WhjERH/FqGLzfA0icvebAMV4CD6DyoReA3F6EimEA3/KywlQzFwULegXYB3gE81V8l2OziBiYHUWgQkgUOJA8WOzVfAG8AC3VExADsxentcAA99p+AH4Y8j9APzFudaY5e2PGIABijGH3AAOEjjAEyrdhVQL5ZweUVozsYDfQydGfDKxJyhBoCbaarIO3eYUDdqnBprUfWBiKK96cfaEMMaAuh1KDLC4JUU3AClKziJkPDeVISAqGH2edJIoPAmjVLtaR0SSTCw2q8VpeDixYsPfU0obWFT8AKMwIY6kHQTZ072FbCTrVTD1xZ+cnU8gZtMCSDQW4gZq3QNniAkw+wEySy4iYAcHjBJYIWoctCHYBDApsE/AEN0g8ClEAZttwAAAABJRU5ErkJggg=='; // Tea emoji
-
-        const softDrinkImg = new Image();
-        softDrinkImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABFElEQVRoge3YsQnCQBBG4fNkgFdNdpKgQtRUiRZlQwSXblCoIiXIjIARjfxVbAkV48fm33h3SPk9m+an1kAQAAAAAAAAAAAAAAgP1bAHnCTsIMDSDuZaBFAGzuGeAlC/sI6AVAL20r8LWJ94B2A46k/qXSl4BIgdUWQb4l2ASCNJZBnBJwDSAilqB3A6gakZe4fFLlGs2V14ZcBNwKc/kGfBJyA6MI5gF7J/AdoGO1OpTto0+JcAvsCD/JX0TKszzG+GR+YkzG2r+w+AAnAAAAAAAAAAAAAACAbX85GFdwffRgVCAAAAAASUVORK5CYII='; // Soft drink emoji
-
-        const baristaImg = new Image();
-        baristaImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABOElEQVRoge3WsQnCQBBG4e8SQU1F0liKQttQo9GFojQYLrAUn7Hy+eZzM2e3fyVOK8tQAAAAAAAAAAAAAAAPgmQAgbap7gJXCWvEPgLGBawCQhugFgBVgtwHQD1gX5B2APWAfkHJMtjpRKhBlwL3AtcFYwEAp7id4C3AzsCHAIu3V1gC+B31xgO+As0kHrkacAVejz4GYEXBnAw6dUAzDRA1zGYD0LQEKK0CTXc/h/gWgLJZAFHEH0BTQVKEHsCHHNhuDLwBZ1RzwAr3vUrW3N4Jd/CfUJf47lxa5YkSmX6hPgA5QAAAAAAAAAAAAAAgC+YTQ5ZG2D0TiAAAAAElFTkSuQmCC'; // Placeholder for barista
 
         // Handle user input
         document.addEventListener('keydown', function(event) {
@@ -289,8 +278,10 @@
                 tea.isJumping = false;
             }
 
-            // Draw tea
-            ctx.drawImage(teaImg, tea.x, tea.y, tea.width, tea.height);
+            // Draw tea emoji
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(tea.emoji, tea.x + tea.width / 2, tea.y + tea.height);
 
             // Handle obstacles
             if (timestamp - lastObstacleTime > obstacleFrequency) {
@@ -300,7 +291,8 @@
 
             obstacles.forEach(function(obstacle, index) {
                 obstacle.x -= gameSpeed;
-                ctx.drawImage(obstacle.img, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.font = '48px Arial';
+                ctx.fillText(obstacle.emoji, obstacle.x + obstacle.width / 2, obstacle.y + obstacle.height);
 
                 // Collision detection
                 if (isColliding(tea, obstacle)) {
@@ -317,13 +309,13 @@
             // Display score
             ctx.font = '20px Arial';
             ctx.fillStyle = '#4B2E2A';
-            ctx.fillText('Score: ' + score, canvas.width - 120, 30);
+            ctx.fillText('Score: ' + score, canvas.width - 80, 30);
         }
 
         // Create obstacles
         function createObstacle() {
-            let obstacleType = Math.random() > 0.5 ? 'softDrink' : 'barista';
-            let obstacleImg = obstacleType === 'softDrink' ? softDrinkImg : baristaImg;
+            let obstacleType = Math.random() > 0.5 ? 'softDrink' : 'person';
+            let obstacleEmoji = obstacleType === 'softDrink' ? '🥤' : '🚶';
             let obstacleWidth = 50;
             let obstacleHeight = 50;
             let obstacle = {
@@ -331,7 +323,7 @@
                 y: 150,
                 width: obstacleWidth,
                 height: obstacleHeight,
-                img: obstacleImg
+                emoji: obstacleEmoji
             };
             obstacles.push(obstacle);
         }

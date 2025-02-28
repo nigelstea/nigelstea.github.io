@@ -10,18 +10,24 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
         }
 
         /* Hide scrollbar for Chrome, Safari, and Opera */
         body::-webkit-scrollbar {
             display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
         /* Navigation Bar */
@@ -34,12 +40,10 @@
             border-radius: 10px;
             position: fixed;
             width: calc(100% - 40px);
-            top: 0;
-            left: 0;
-            margin: 10px 20px;
+            top: 10px;
+            left: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            flex-wrap: wrap;
         }
 
         .navbar a.logo {
@@ -83,15 +87,26 @@
 
         /* Game Container */
         .game-container {
-            margin-top: 100px; /* Adjust for navbar height */
-            padding: 20px;
-            text-align: center;
+            position: absolute;
+            top: 80px; /* Adjust for navbar height */
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
         }
 
         .game-title {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 36px;
             margin-bottom: 20px;
             font-family: 'Georgia', serif;
+            text-align: center;
         }
 
         /* Canvas Styling */
@@ -99,11 +114,19 @@
             border: 5px solid #8B4513;
             border-radius: 10px;
             background-color: #FFFFFF;
+            /* Make canvas responsive */
+            width: auto;
+            height: auto;
+            max-width: 80%;
+            max-height: 100%;
         }
 
         /* Game Controls */
         .controls {
-            margin-top: 20px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .controls button {
@@ -112,7 +135,7 @@
             border: none;
             padding: 15px 20px;
             margin: 5px;
-            font-size: 18px;
+            font-size: 24px;
             border-radius: 10px;
             cursor: pointer;
         }
@@ -121,48 +144,37 @@
             background-color: #6B3A0E;
         }
 
-        /* Footer */
-        .footer {
-            background-color: #8B4513;
-            color: #FFFFFF;
+        /* Status Message */
+        #gameStatus {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
             text-align: center;
-            padding: 20px;
-            font-size: 16px;
-            border-radius: 10px;
-            margin: 20px;
+        }
+
+        /* Footer (Hidden for full-screen game) */
+        .footer {
+            display: none;
         }
 
         /* Responsive Design */
         @media screen and (max-width: 768px) {
-            .navbar {
+            .game-container {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
-            .navbar .menu {
-                width: 100%;
-                flex-wrap: wrap;
-            }
-
-            .navbar .menu a {
-                width: 100%;
-                text-align: left;
-                margin: 5px 0;
-            }
-
-            .navbar a.logo {
-                margin-bottom: 10px;
-            }
-
-            .game-title {
-                font-size: 28px;
+            .controls {
+                flex-direction: row;
+                margin-top: 20px;
+                margin-left: 0;
             }
 
             .controls button {
-                width: 60px;
-                height: 60px;
-                padding: 0;
-                font-size: 24px;
+                margin: 5px;
+                padding: 15px;
+                font-size: 20px;
             }
         }
     </style>
@@ -183,20 +195,26 @@
         </div>
     </div>
 
+    <!-- Game Title -->
+    <h1 class="game-title">Tea Maze Adventure</h1>
+
     <!-- Game Container -->
     <div class="game-container">
-        <h1 class="game-title">Tea Maze Adventure</h1>
-        <canvas id="gameCanvas" width="600" height="600"></canvas>
-        <p id="gameStatus" style="font-size: 18px; margin-top: 20px;"></p>
+        <canvas id="gameCanvas"></canvas>
 
         <!-- On-Screen Controls -->
         <div class="controls">
-            <button id="upBtn">▲</button><br>
-            <button id="leftBtn">◄</button>
-            <button id="downBtn">▼</button>
-            <button id="rightBtn">►</button>
+            <button id="upBtn">▲</button>
+            <div>
+                <button id="leftBtn">◄</button>
+                <button id="downBtn">▼</button>
+                <button id="rightBtn">►</button>
+            </div>
         </div>
     </div>
+
+    <!-- Game Status -->
+    <p id="gameStatus"></p>
 
     <!-- Footer -->
     <div class="footer">
@@ -210,8 +228,8 @@
         const ctx = canvas.getContext('2d');
 
         // Game Settings
-        const tileCount = 21; // Must be odd for maze generation
-        const tileSize = canvas.width / tileCount;
+        let tileCount = 21; // Must be odd for maze generation
+        let tileSize;
 
         // Player Object
         const player = {
@@ -241,13 +259,27 @@
         function initGame() {
             generateMaze();
             placeTeaBags();
-            drawGame();
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
             document.addEventListener('keydown', keyDownHandler);
             document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
             document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
             document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
             document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
             updateStatus();
+        }
+
+        // Resize Canvas Based on Window Size
+        function resizeCanvas() {
+            const container = document.querySelector('.game-container');
+            const controlsWidth = document.querySelector('.controls').offsetWidth;
+            const availableWidth = container.clientWidth - controlsWidth - 40; // Padding
+            const availableHeight = container.clientHeight - 40; // Padding
+            const size = Math.min(availableWidth, availableHeight);
+            canvas.width = size;
+            canvas.height = size;
+            tileSize = size / tileCount;
+            drawGame();
         }
 
         // Generate Maze using Recursive Backtracker Algorithm

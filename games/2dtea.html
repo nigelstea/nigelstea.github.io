@@ -33,7 +33,6 @@
         /* Navigation Bar */
         .navbar {
             background-color: #8B4513; /* Saddle brown */
-            overflow: hidden;
             display: flex;
             align-items: center;
             padding: 10px 20px;
@@ -93,20 +92,33 @@
             left: 20px;
             right: 20px;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
+        /* Game Title */
         .game-title {
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
             font-size: 36px;
             margin-bottom: 20px;
             font-family: 'Georgia', serif;
             text-align: center;
+        }
+
+        /* Game Content */
+        .game-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .game-area {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Canvas Styling */
@@ -114,7 +126,6 @@
             border: 5px solid #8B4513;
             border-radius: 10px;
             background-color: #FFFFFF;
-            /* Make canvas responsive */
             width: auto;
             height: auto;
             max-width: 80%;
@@ -144,14 +155,11 @@
             background-color: #6B3A0E;
         }
 
-        /* Status Message */
+        /* Game Status */
         #gameStatus {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
             font-size: 18px;
             text-align: center;
+            margin-top: 20px;
         }
 
         /* Footer (Hidden for full-screen game) */
@@ -161,14 +169,15 @@
 
         /* Responsive Design */
         @media screen and (max-width: 768px) {
-            .game-container {
+            .game-area {
                 flex-direction: column;
+                margin-top: 20px;
             }
 
             .controls {
                 flex-direction: row;
-                margin-top: 20px;
                 margin-left: 0;
+                margin-top: 20px;
             }
 
             .controls button {
@@ -195,26 +204,31 @@
         </div>
     </div>
 
-    <!-- Game Title -->
-    <h1 class="game-title">Tea Maze Adventure</h1>
-
     <!-- Game Container -->
     <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
+        <!-- Game Title -->
+        <h1 class="game-title">Tea Maze Adventure</h1>
 
-        <!-- On-Screen Controls -->
-        <div class="controls">
-            <button id="upBtn">▲</button>
-            <div>
-                <button id="leftBtn">◄</button>
-                <button id="downBtn">▼</button>
-                <button id="rightBtn">►</button>
+        <!-- Game Content -->
+        <div class="game-content">
+            <div class="game-area">
+                <canvas id="gameCanvas"></canvas>
+
+                <!-- On-Screen Controls -->
+                <div class="controls">
+                    <button id="upBtn">▲</button>
+                    <div>
+                        <button id="leftBtn">◄</button>
+                        <button id="downBtn">▼</button>
+                        <button id="rightBtn">►</button>
+                    </div>
+                </div>
             </div>
+
+            <!-- Game Status -->
+            <p id="gameStatus">Tea bags collected: 0/0</p>
         </div>
     </div>
-
-    <!-- Game Status -->
-    <p id="gameStatus"></p>
 
     <!-- Footer -->
     <div class="footer">
@@ -271,7 +285,7 @@
 
         // Resize Canvas Based on Window Size
         function resizeCanvas() {
-            const container = document.querySelector('.game-container');
+            const container = document.querySelector('.game-area');
             const controlsWidth = document.querySelector('.controls').offsetWidth;
             const availableWidth = container.clientWidth - controlsWidth - 40; // Padding
             const availableHeight = container.clientHeight - 40; // Padding

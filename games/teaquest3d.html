@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yorkshire Tea Quest 3D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Menu -->
+    <div id="mainMenu">
+        <h1>Yorkshire Tea Quest 3D</h1>
+        <button id="playButton">Play</button>
+        <button id="homeButton">Return to Home</button>
+        <button id="settingsButton">Settings</button>
+    </div>
 
+    <!-- Game Overlays (Initially Hidden) -->
+    <div id="overlay" style="display: none;">
+        <h1>Yorkshire Tea Quest 3D</h1>
+        <h2>Inventory</h2>
+        <p>Black Leaves: <span id="blackCount">0</span></p>
+        <p>Green Leaves: <span id="greenCount">0</span></p>
+        <p>Herbal Leaves: <span id="herbalCount">0</span></p>
+        <p>Water: <span id="waterCount">0</span></p>
+        <h2>Brewed Teas</h2>
+        <p>Total Teas: <span id="teaCount">0</span></p>
+        <div id="teaDetails">
+            <p>&nbsp;&nbsp;Yorkshire Gold: <span id="ygTeaCount">0</span></p>
+            <p>&nbsp;&nbsp;Green Tea: <span id="greenTeaCount">0</span></p>
+            <p>&nbsp;&nbsp;Herbal Infusion: <span id="herbalTeaCount">0</span></p>
+            <p>&nbsp;&nbsp;Blended Tea: <span id="blendedTeaCount">0</span></p>
+        </div>
+        <h2>Brewing Station</h2>
+        <button onclick="brewTea('Yorkshire Gold')">Brew Yorkshire Gold</button>
+        <button onclick="brewTea('Green Tea')">Brew Green Tea</button>
+        <button onclick="brewTea('Herbal Infusion')">Brew Herbal Infusion</button>
+        <button onclick="brewTea('Blended Tea')">Brew Blended Tea</button>
+        <p id="brewStatus"></p>
+        <h2>Scoreboard</h2>
+        <p>Leaves Collected: <span id="leavesCollected">0</span></p>
+        <p>Teas Served: <span id="customersServed">0</span></p>
+        <p>Score: <span id="score">0</span></p>
+        <h2>Upgrades</h2>
+        <button onclick="buyUpgrade('speed')">Increase Speed (Cost: 50 points)</button>
+        <button onclick="buyUpgrade('brewSpeed')">Increase Brew Speed (Cost: 70 points)</button>
+    </div>
+
+    <!-- Recipes Panel (Initially Hidden) -->
+    <div id="recipesPanel" style="display: none;">
+        <h2>Tea Recipes</h2>
+        <ul>
+            <li><strong>Yorkshire Gold</strong>: 3 Black Leaves</li>
+            <li><strong>Green Tea</strong>: 3 Green Leaves</li>
+            <li><strong>Herbal Infusion</strong>: 3 Herbal Leaves</li>
+            <li><strong>Blended Tea</strong>: 2 Black, 1 Green, 1 Herbal Leaves</li>
+        </ul>
+    </div>
+
+    <!-- Include Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js" integrity="sha512-n8IpKWzDnBOcBhRlHirMZOUvEq2bLRMuJGjuVqbzUJwtTsgwOgK5aS0c1JA647XWYfqvXve8k3PtZdzpipFjgg==" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.126.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Include the script file -->
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js" integrity="sha512-n8IpKWzDnBOcBhRlHirMZOUvEq2bLRMuJGjuVqbzUJwtTsgwOgK5aS0c1JA647XWYfqvXve8k3PtZdzpipFjgg==" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://unpkg.com/three@0.126.0/examples/js/controls/OrbitControls.js"></script>

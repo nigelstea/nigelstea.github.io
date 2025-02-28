@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
         }
-
+        
         html, body {
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -72,6 +72,35 @@
             background-color: #6B3A0E;
             color: #FFDAB9;
         }
+        /* Custom Scrollbar Styles for the Upgrade Column */
+
+        /* For WebKit-based browsers */
+        .sidebar::-webkit-scrollbar {
+            width: 12px;  /* Adjust the width of the scrollbar */
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background-color: rgba(210, 180, 140, 0.5);  /* Lighter background for the track */
+            border-radius: 10px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #8B4513;  /* Saddle brown thumb */
+            border-radius: 10px;
+            border: 3px solid rgba(0, 0, 0, 0);  /* Transparent border to add padding */
+            background-clip: content-box;  /* Ensures the border doesn't overlap the thumb */
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background-color: #6B3A0E;  /* Darker brown on hover */
+        }
+        
+        /* For Firefox */
+        .sidebar {
+            scrollbar-width: thin;  /* Makes the scrollbar thinner */
+            scrollbar-color: #8B4513 rgba(210, 180, 140, 0.5);  /* Thumb color and track color */
+        }
+
 
         /* Game Container */
         .game-container {

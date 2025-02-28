@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nigel's Tea - Word Mash</title>
-    <link rel="icon" href="../logo.png" type="image/png">
+    <title>Nigel's Tea - Games</title>
+    <link rel="icon" href="logo.png" type="image/png">
     <style>
         /* Global Styles */
         * {
@@ -16,8 +16,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
-            /* Commented out to allow scrolling */
-            /* overflow: hidden; */
+            /* Allow scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
         /* Navigation Bar */
@@ -77,7 +77,7 @@
         /* Games Section */
         .games-section {
             background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
-            padding: 100px 20px 60px;
+            padding: 60px 20px; /* Adjusted padding */
             text-align: center;
             margin-top: 100px; /* Adjust for navbar height */
             border-radius: 10px;
@@ -115,21 +115,10 @@
             color: #FFDAB9;
         }
 
-        /* Footer */
-        .footer {
-            background-color: #8B4513;
-            color: #FFFFFF;
-            text-align: center;
-            padding: 20px;
-            font-size: 16px;
-            border-radius: 10px;
-            margin: 20px;
-        }
-
-        /* Tea Wordle Game Styles */
+        /* Tea Wordle Game Section */
         .tea-wordle-section {
             background-color: rgba(210, 180, 140, 0.9); /* Match the games section */
-            padding: 50px 20px;
+            padding: 60px 20px; /* Adjusted padding to match */
             text-align: center;
             margin: 20px;
             border-radius: 10px;
@@ -206,6 +195,17 @@
             margin: 0 auto;
         }
 
+        /* Footer */
+        .footer {
+            background-color: #8B4513;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 20px; /* Footer padding */
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
         /* Responsive Design Adjustments */
         @media screen and (max-width: 768px) {
             .navbar {
@@ -238,7 +238,7 @@
             }
 
             .tea-wordle-section {
-                padding: 30px 10px;
+                padding: 40px 10px; /* Adjusted for responsive */
             }
 
             .tea-wordle-section h1 {
@@ -280,10 +280,20 @@
         </div>
     </div>
 
+    <!-- Games Section -->
+    <div class="games-section">
+        <h1>Our Exciting Tea-Themed Games</h1>
+        <div class="game-buttons">
+            <a href="/games/2dtea.html">Tea Maze Adventure</a>
+            <a href="/games/tea-clicker.html">Tea Clicker</a>
+            <a href="/games/flappy-mug.html">Flappy Mug</a>
+            <a href="/games/teaquest/game.html">TeaQuest 3D</a>
+        </div>
+    </div>
 
     <!-- Tea Wordle Game Section -->
     <div class="tea-wordle-section">
-        <h1>Tea Word Mash</h1>
+        <h1>Tea Wordle</h1>
         <div id="message"></div>
         <div id="grid-container"></div>
         <div id="keyboard"></div>
@@ -296,7 +306,7 @@
 
     <!-- JavaScript -->
     <script>
-      const words = ['matcha', 'oolong', 'puerh', 'sencha', 'assam', 'keemun', 'rooibos', 'earlgrey', 'jasmine', 'herbal'];
+      const words = ['match', 'apple', 'blend', 'herbs', 'spice', 'lemon', 'honey', 'cream', 'minty', 'fresh'];
       const answer = words[Math.floor(Math.random() * words.length)].toUpperCase();
       const maxGuesses = 6;
       let currentGuess = '';
@@ -408,7 +418,7 @@
               currentRow++;
               currentGuess = '';
               if (currentRow === maxGuesses) {
-                  message.textContent = `Out of guesses! The tea was ${answer}.`;
+                  message.textContent = `Out of guesses! The word was ${answer}.`;
                   gameOver = true;
               }
           }
@@ -417,7 +427,7 @@
       initGrid();
       initKeyboard();
 
-      // Optional: Listen to keyboard events
+      // Listen to keyboard events
       document.addEventListener('keydown', (e) => {
           if (gameOver) return;
           const key = e.key.toUpperCase();

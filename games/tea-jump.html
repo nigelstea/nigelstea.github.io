@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nigel's Tea - Tea Jump</title>
+    <title>Nigel's Tea - Games</title>
     <link rel="icon" href="../logo.png" type="image/png">
     <style>
         /* Global Styles */
@@ -206,6 +206,7 @@
         </div>
     </div>
 
+    
     <!-- Runner Game Section -->
     <div class="runner-game-section">
         <h1>Tea Jump</h1>
@@ -243,6 +244,8 @@
         let gameSpeed = 5;
         let gameOver = false;
         let score = 0;
+        let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
+        let lastSpeedIncreaseTime = 0;
 
         // Handle user input
         document.addEventListener('keydown', function(event) {
@@ -305,6 +308,15 @@
                     score++;
                 }
             });
+
+            // Increase game speed over time
+            if (timestamp - lastSpeedIncreaseTime > speedIncreaseInterval) {
+                gameSpeed += 0.5; // Increase speed
+                if (obstacleFrequency > 800) {
+                    obstacleFrequency -= 50; // Increase obstacle frequency, but not too much
+                }
+                lastSpeedIncreaseTime = timestamp;
+            }
 
             // Display score
             ctx.font = '20px Arial';

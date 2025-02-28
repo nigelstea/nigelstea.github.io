@@ -8,16 +8,18 @@
         /* Global Styles */
         * {
             box-sizing: border-box; /* Include padding and border in element's total width and height */
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
             /* Hide scrollbar for IE, Edge, and Firefox */
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
+            overflow: hidden; /* Prevent scrolling */
         }
 
         /* Hide scrollbar for Chrome, Safari, and Opera */
@@ -28,19 +30,16 @@
         /* Navigation Bar */
         .navbar {
             background-color: #8B4513; /* Saddle brown */
-            overflow: hidden;
             display: flex;
             align-items: center;
             padding: 10px 20px;
-            border-radius: 10px; /* Rounded corners */
             position: fixed;
-            width: calc(100% - 40px); /* Adjust width to accommodate border-radius */
-            top: 0;
-            left: 0;
-            margin: 10px 20px; /* Margin to fit the screen and show rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 40px);
+            top: 10px;
+            left: 20px;
             z-index: 1000;
-            flex-wrap: wrap;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .navbar a.logo {
@@ -65,19 +64,18 @@
         .navbar .menu a {
             color: #FFFFFF;
             text-align: center;
-            padding: 14px 20px;
+            padding: 10px 20px;
             text-decoration: none;
             font-size: 18px;
-            border-radius: 10px; /* Rounded corners */
-            margin: 0 5px; /* Uniform horizontal spacing */
+            border-radius: 10px;
+            margin: 0 5px;
         }
 
         .navbar .menu a:hover {
-            background-color: #6B3A0E; /* Darker brown */
-            color: #FFDAB9; /* Light peach */
+            background-color: #6B3A0E;
+            color: #FFDAB9;
         }
 
-        /* Active Link Styling */
         .navbar .menu a.active {
             background-color: #6B3A0E;
             color: #FFDAB9;
@@ -90,8 +88,8 @@
             text-align: center;
             margin-top: 100px; /* Adjust for navbar height */
             border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 20px;
+            overflow: auto;
         }
 
         .games-section h1 {
@@ -189,7 +187,8 @@
         <h1>Our Exciting Tea-Themed Games</h1>
         <div class="game-buttons">
             <a href="/games/2dtea.html">Tea Maze Adventure</a>
-            <a href="/games/teaquest/game.html">TeaQuest 3D</a>
+            <a href="/games/tea-clicker.html">Tea Clicker</a>
+            <a href="/games/teaquest3d.html">TeaQuest 3D</a>
         </div>
     </div>
 

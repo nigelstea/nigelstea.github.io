@@ -122,9 +122,9 @@
 
         /* Upgrade Items */
         .upgrade {
+            position: relative; /* Relative positioning for tooltips */
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             background-color: #FFF8DC; /* Cornsilk background */
             padding: 10px;
             margin-bottom: 10px;
@@ -137,6 +137,12 @@
             background-color: #FFEC8B; /* Light golden background */
         }
 
+        .upgrade-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         .upgrade-name {
             font-size: 18px;
             font-weight: bold;
@@ -144,6 +150,46 @@
 
         .upgrade-cost {
             font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .upgrade-emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        /* Tooltip Styling */
+        .upgrade-description {
+            visibility: hidden;
+            width: 200px;
+            background-color: #8B4513;
+            color: #FFFFFF;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 120%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .upgrade-description::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #8B4513 transparent transparent transparent;
+        }
+
+        .upgrade:hover .upgrade-description {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* Tea Per Second Display */
@@ -234,6 +280,19 @@
             .save-load-buttons button {
                 margin: 5px 0;
             }
+
+            /* Adjust tooltip positioning for mobile */
+            .upgrade-description {
+                bottom: auto;
+                top: 110%;
+                left: 50%;
+                margin-left: -100px;
+            }
+
+            .upgrade-description::after {
+                top: -16px;
+                border-color: transparent transparent #8B4513 transparent;
+            }
         }
     </style>
 </head>
@@ -286,6 +345,8 @@
         let upgrades = [
             {
                 name: 'Better Kettle',
+                emoji: '🫖',
+                description: 'Improves your kettle to brew more tea per click.',
                 baseCost: 10,
                 cost: 10,
                 amount: 0,
@@ -293,6 +354,8 @@
             },
             {
                 name: 'Tea Plantation',
+                emoji: '🌱',
+                description: 'Own a tea plantation to produce tea automatically.',
                 baseCost: 100,
                 cost: 100,
                 amount: 0,
@@ -300,6 +363,8 @@
             },
             {
                 name: 'Tea Factory',
+                emoji: '🏭',
+                description: 'Build a factory to mass-produce tea.',
                 baseCost: 1000,
                 cost: 1000,
                 amount: 0,
@@ -307,10 +372,48 @@
             },
             {
                 name: 'Tea Empire',
+                emoji: '🌐',
+                description: 'Expand your business into a tea empire.',
                 baseCost: 10000,
                 cost: 10000,
                 amount: 0,
                 teaPerSecond: 100,
+            },
+            {
+                name: 'Tea Robot',
+                emoji: '🤖',
+                description: 'Automate tea production with robots.',
+                baseCost: 50000,
+                cost: 50000,
+                amount: 0,
+                teaPerSecond: 500,
+            },
+            {
+                name: 'Quantum Brewer',
+                emoji: '⚛️',
+                description: 'Use quantum mechanics to brew tea instantly.',
+                baseCost: 250000,
+                cost: 250000,
+                amount: 0,
+                teaPerSecond: 2000,
+            },
+            {
+                name: 'Interstellar Trade',
+                emoji: '🚀',
+                description: 'Trade tea across galaxies for massive profits.',
+                baseCost: 1000000,
+                cost: 1000000,
+                amount: 0,
+                teaPerSecond: 10000,
+            },
+            {
+                name: 'Time Machine',
+                emoji: '⌛',
+                description: 'Manipulate time to brew infinite tea.',
+                baseCost: 5000000,
+                cost: 5000000,
+                amount: 0,
+                teaPerSecond: 50000,
             },
             // Add more upgrades as desired
         ];
@@ -355,16 +458,32 @@
                 upgradeDiv.className = 'upgrade';
                 upgradeDiv.onclick = () => buyUpgrade(index);
 
+                let headerDiv = document.createElement('div');
+                headerDiv.className = 'upgrade-header';
+
                 let nameDiv = document.createElement('div');
                 nameDiv.className = 'upgrade-name';
                 nameDiv.textContent = upgrade.name + ' (' + upgrade.amount + ')';
 
+                let emojiDiv = document.createElement('div');
+                emojiDiv.className = 'upgrade-emoji';
+                emojiDiv.textContent = upgrade.emoji;
+
                 let costDiv = document.createElement('div');
                 costDiv.className = 'upgrade-cost';
-                costDiv.textContent = 'Cost: ' + upgrade.cost + ' tea';
+                costDiv.textContent = 'Cost: ' + upgrade.cost;
 
-                upgradeDiv.appendChild(nameDiv);
+                // Tooltip for description
+                let descriptionDiv = document.createElement('div');
+                descriptionDiv.className = 'upgrade-description';
+                descriptionDiv.textContent = upgrade.description;
+
+                headerDiv.appendChild(emojiDiv);
+                headerDiv.appendChild(nameDiv);
+
+                upgradeDiv.appendChild(headerDiv);
                 upgradeDiv.appendChild(costDiv);
+                upgradeDiv.appendChild(descriptionDiv);
 
                 upgradesDiv.appendChild(upgradeDiv);
             });

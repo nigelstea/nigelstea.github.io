@@ -159,17 +159,17 @@
         let mugY = canvas.height / 2;
         let mugVelocity = 0;
 
-        // Adjusted Gravity and Jump Strength
+        // Adjusted Gravity and Jump Strength for Easier Gameplay
         const gravity = 0.2;          // Reduced gravity for smoother gliding
         const jumpStrength = -6;      // Adjusted jump strength to balance
 
         // Pipes
         let pipes = [];
         const pipeWidth = 60;
-        const pipeGap = 150;
-        const pipeVelocity = 2;
+        const pipeGap = 200;          // Increased gap between pipes
+        const pipeVelocity = 1.5;     // Reduced pipe speed
         let pipeSpawnTimer = 0;
-        const pipeSpawnInterval = 90; // frames
+        const pipeSpawnInterval = 100; // Increased interval between pipe spawns
 
         // Score
         let score = 0;
@@ -213,7 +213,9 @@
         }
 
         function spawnPipe() {
-            const pipeTopHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 50;
+            const minPipeHeight = 50;
+            const maxPipeHeight = canvas.height - pipeGap - minPipeHeight;
+            const pipeTopHeight = Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) + minPipeHeight;
             const pipeBottomY = pipeTopHeight + pipeGap;
             pipes.push({
                 x: canvas.width,

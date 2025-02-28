@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* Main Menu Styles */
+#mainMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #87CEEB; /* Sky blue background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#mainMenu h1 {
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 50px;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#mainMenu button {
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #FFA500;
+    color: #fff;
+    font-weight: bold;
+}
+
+#mainMenu button:hover {
+    background-color: #FF8C00;
+}
+
+/* Overlay Styles */
+#overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1;
+    max-width: 300px;
+}
+
+/* Recipes Panel Styles */
+#recipesPanel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1;
+    max-width: 250px;
+}
+
+#recipesPanel h2 {
+    margin-top: 0;
+}
+
+h1, h2 {
+    margin: 10px 0;
+}
+
+p, button, ul, li {
+    margin: 5px 0;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #FFA500;
+    color: #fff;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #FF8C00;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin-left: 10px;
+}
+
+#brewStatus {
+    min-height: 20px;
+}

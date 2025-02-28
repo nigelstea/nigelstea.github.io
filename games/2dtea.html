@@ -15,7 +15,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
-            /* Hide scrollbar for IE, Edge, and Firefox */
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
         }
@@ -77,7 +76,6 @@
             color: #FFDAB9;
         }
 
-        /* Active Link Styling */
         .navbar .menu a.active {
             background-color: #6B3A0E;
             color: #FFDAB9;
@@ -101,6 +99,26 @@
             border: 5px solid #8B4513;
             border-radius: 10px;
             background-color: #FFFFFF;
+        }
+
+        /* Game Controls */
+        .controls {
+            margin-top: 20px;
+        }
+
+        .controls button {
+            background-color: #8B4513;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px 20px;
+            margin: 5px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .controls button:hover {
+            background-color: #6B3A0E;
         }
 
         /* Footer */
@@ -139,6 +157,13 @@
             .game-title {
                 font-size: 28px;
             }
+
+            .controls button {
+                width: 60px;
+                height: 60px;
+                padding: 0;
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -163,6 +188,14 @@
         <h1 class="game-title">Tea Maze Adventure</h1>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
         <p id="gameStatus" style="font-size: 18px; margin-top: 20px;"></p>
+
+        <!-- On-Screen Controls -->
+        <div class="controls">
+            <button id="upBtn">▲</button><br>
+            <button id="leftBtn">◄</button>
+            <button id="downBtn">▼</button>
+            <button id="rightBtn">►</button>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -177,20 +210,20 @@
         const ctx = canvas.getContext('2d');
 
         // Game Settings
-        const tileCount = 20; // 20x20 grid
+        const tileCount = 21; // Must be odd for maze generation
         const tileSize = canvas.width / tileCount;
 
         // Player Object
         const player = {
-            x: 0,
-            y: 0,
+            x: 1,
+            y: 1,
             color: '#4B2E2A',
         };
 
         // Teapot Position
         const teapot = {
-            x: tileCount - 1,
-            y: tileCount - 1,
+            x: tileCount - 2,
+            y: tileCount - 2,
             color: '#8B4513',
         };
 
@@ -210,10 +243,14 @@
             placeTeaBags();
             drawGame();
             document.addEventListener('keydown', keyDownHandler);
+            document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
+            document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
+            document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
+            document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
             updateStatus();
         }
 
-        // Generate Maze using Recursive Division Algorithm
+        // Generate Maze using Recursive Backtracker Algorithm
         function generateMaze() {
             // Initialize maze grid with walls
             for (let y = 0; y < tileCount; y++) {
@@ -223,59 +260,53 @@
                 }
             }
 
-            // Recursive Division
-            divide(0, 0, tileCount, tileCount);
+            // Carve passages
+            function carvePassage(x, y) {
+                const directions = shuffle([
+                    { x: 0, y: -2 },
+                    { x: 2, y: 0 },
+                    { x: 0, y: 2 },
+                    { x: -2, y: 0 },
+                ]);
 
-            // Set player and teapot positions to be empty
+                directions.forEach(dir => {
+                    const nx = x + dir.x;
+                    const ny = y + dir.y;
+
+                    if (nx > 0 && nx < tileCount - 1 && ny > 0 && ny < tileCount - 1 && maze[ny][nx] === 1) {
+                        maze[ny][nx] = 0;
+                        maze[y + dir.y / 2][x + dir.x / 2] = 0;
+                        carvePassage(nx, ny);
+                    }
+                });
+            }
+
             maze[player.y][player.x] = 0;
+            carvePassage(player.x, player.y);
             maze[teapot.y][teapot.x] = 0;
         }
 
-        function divide(x, y, width, height) {
-            if (width <= 2 || height <= 2) return;
-
-            let horizontal = Math.random() > 0.5;
-
-            if (width > height) {
-                horizontal = false;
-            } else if (height > width) {
-                horizontal = true;
+        // Shuffle an array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
-
-            if (horizontal) {
-                // Horizontal division
-                let divideY = y + Math.floor(Math.random() * (height - 2)) + 1;
-                for (let i = x; i < x + width; i++) {
-                    maze[divideY][i] = 1;
-                }
-                let passageX = x + Math.floor(Math.random() * width);
-                maze[divideY][passageX] = 0;
-
-                divide(x, y, width, divideY - y);
-                divide(x, divideY + 1, width, y + height - divideY - 1);
-            } else {
-                // Vertical division
-                let divideX = x + Math.floor(Math.random() * (width - 2)) + 1;
-                for (let i = y; i < y + height; i++) {
-                    maze[i][divideX] = 1;
-                }
-                let passageY = y + Math.floor(Math.random() * height);
-                maze[passageY][divideX] = 0;
-
-                divide(x, y, divideX - x, height);
-                divide(divideX + 1, y, x + width - divideX - 1, height);
-            }
+            return array;
         }
 
         // Place Tea Bags Randomly
         function placeTeaBags() {
             let placed = 0;
             while (placed < totalTeaBags) {
-                let x = Math.floor(Math.random() * tileCount);
-                let y = Math.floor(Math.random() * tileCount);
+                let x = Math.floor(Math.random() * (tileCount - 2)) + 1;
+                let y = Math.floor(Math.random() * (tileCount - 2)) + 1;
                 if (maze[y][x] === 0 && !(x === player.x && y === player.y) && !(x === teapot.x && y === teapot.y)) {
-                    teaBags.push({ x: x, y: y });
-                    placed++;
+                    // Ensure no duplicate tea bags
+                    if (!teaBags.some(bag => bag.x === x && bag.y === y)) {
+                        teaBags.push({ x: x, y: y });
+                        placed++;
+                    }
                 }
             }
         }
@@ -314,16 +345,16 @@
 
         // Handle Keyboard Input
         function keyDownHandler(e) {
-            let moveX = 0;
-            let moveY = 0;
+            if (e.key === 'ArrowUp' || e.key === 'w') movePlayer(0, -1);
+            if (e.key === 'ArrowDown' || e.key === 's') movePlayer(0, 1);
+            if (e.key === 'ArrowLeft' || e.key === 'a') movePlayer(-1, 0);
+            if (e.key === 'ArrowRight' || e.key === 'd') movePlayer(1, 0);
+        }
 
-            if (e.key === 'ArrowUp' || e.key === 'w') moveY = -1;
-            if (e.key === 'ArrowDown' || e.key === 's') moveY = 1;
-            if (e.key === 'ArrowLeft' || e.key === 'a') moveX = -1;
-            if (e.key === 'ArrowRight' || e.key === 'd') moveX = 1;
-
-            let newX = player.x + moveX;
-            let newY = player.y + moveY;
+        // Move Player Function
+        function movePlayer(dx, dy) {
+            let newX = player.x + dx;
+            let newY = player.y + dy;
 
             // Check boundaries and walls
             if (
@@ -349,6 +380,7 @@
                     if (collectedTeaBags === totalTeaBags) {
                         document.getElementById('gameStatus').textContent = 'You delivered all the tea bags! Well done!';
                         document.removeEventListener('keydown', keyDownHandler);
+                        disableControls();
                     } else {
                         document.getElementById('gameStatus').textContent = `You need to collect all the tea bags before delivering them! Tea bags remaining: ${totalTeaBags - collectedTeaBags}`;
                     }
@@ -356,6 +388,14 @@
 
                 drawGame();
             }
+        }
+
+        // Disable On-Screen Controls
+        function disableControls() {
+            document.getElementById('upBtn').disabled = true;
+            document.getElementById('downBtn').disabled = true;
+            document.getElementById('leftBtn').disabled = true;
+            document.getElementById('rightBtn').disabled = true;
         }
 
         // Update Game Status

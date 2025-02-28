@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         html, body {
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,7 +30,7 @@
             width: calc(100% - 40px);
             top: 10px;
             left: 20px;
-            z-index: 1000;
+            z-index: 1000; /* Ensure navbar stays on top */
             border-radius: 10px;
         }
 
@@ -72,42 +72,13 @@
             background-color: #6B3A0E;
             color: #FFDAB9;
         }
-        /* Custom Scrollbar Styles for the Upgrade Column */
-
-        /* For WebKit-based browsers */
-        .sidebar::-webkit-scrollbar {
-            width: 12px;  /* Adjust the width of the scrollbar */
-        }
-        
-        .sidebar::-webkit-scrollbar-track {
-            background-color: rgba(210, 180, 140, 0.5);  /* Lighter background for the track */
-            border-radius: 10px;
-        }
-        
-        .sidebar::-webkit-scrollbar-thumb {
-            background-color: #8B4513;  /* Saddle brown thumb */
-            border-radius: 10px;
-            border: 3px solid rgba(0, 0, 0, 0);  /* Transparent border to add padding */
-            background-clip: content-box;  /* Ensures the border doesn't overlap the thumb */
-        }
-        
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background-color: #6B3A0E;  /* Darker brown on hover */
-        }
-        
-        /* For Firefox */
-        .sidebar {
-            scrollbar-width: thin;  /* Makes the scrollbar thinner */
-            scrollbar-color: #8B4513 rgba(210, 180, 140, 0.5);  /* Thumb color and track color */
-        }
-
 
         /* Game Container */
         .game-container {
             margin-top: 80px; /* Adjust for navbar height */
             display: flex;
             height: calc(100% - 80px);
-            overflow: hidden; /* Prevent scrolling in main content */
+            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         /* Sidebar */
@@ -117,6 +88,31 @@
             padding: 20px;
             box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
             overflow-y: auto; /* Allow scrolling in upgrade column */
+
+            /* Custom Scrollbar for Sidebar */
+            /* For WebKit-based browsers */
+            scrollbar-width: thin;  /* Makes the scrollbar thinner in Firefox */
+            scrollbar-color: #8B4513 rgba(210, 180, 140, 0.5);  /* Thumb and track colors in Firefox */
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 12px;  /* Adjust the width of the scrollbar */
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background-color: rgba(210, 180, 140, 0.5);  /* Lighter background for the track */
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #8B4513;  /* Saddle brown thumb */
+            border-radius: 10px;
+            border: 3px solid rgba(0, 0, 0, 0);  /* Transparent border to add padding */
+            background-clip: content-box;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background-color: #6B3A0E;  /* Darker brown on hover */
         }
 
         /* Main Content */
@@ -127,7 +123,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden; /* Prevent scrolling in main content */
+            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         .kettle-container {
@@ -163,6 +159,7 @@
             border-radius: 10px;
             border: 1px solid #8B4513; /* Saddle brown border */
             cursor: pointer;
+            z-index: 1; /* Set a higher z-index */
         }
 
         .upgrade:hover {
@@ -199,7 +196,7 @@
             border-radius: 8px;
             padding: 8px;
             position: absolute;
-            z-index: 1;
+            z-index: 9999; /* Ensure tooltip appears over all other elements */
             bottom: 120%;
             left: 50%;
             margin-left: -100px;
@@ -236,6 +233,7 @@
             font-size: 24px;
             color: #4B2E2A;
             animation: floatUp 1s ease-out forwards;
+            z-index: 1000; /* Ensure floating text appears above other elements */
         }
 
         @keyframes floatUp {

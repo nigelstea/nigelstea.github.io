@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Nigel's Tea - Tea Word Mash</title>
-    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="icon" href="../logo.png" type="image/png">
     <style>
         /* Global Styles */
         * {
@@ -16,7 +16,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F5F5DC; /* Beige background */
             color: #4B2E2A; /* Dark brown text */
-            /* Allow scrolling */
             overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
@@ -118,7 +117,7 @@
         /* Tea Wordle Game Section */
         .tea-wordle-section {
             background-color: rgba(210, 180, 140, 0.9); /* Match the games section */
-            padding: 60px 20px; /* Adjusted padding to match */
+            padding: 60px 20px; /* Adjusted padding */
             text-align: center;
             margin: 20px;
             border-radius: 10px;
@@ -139,7 +138,6 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(5, 60px);
             grid-gap: 5px;
             justify-content: center;
             margin: 0 auto 20px;
@@ -252,11 +250,6 @@
                 line-height: 40px;
             }
 
-            .grid {
-                grid-template-columns: repeat(5, 40px);
-                grid-gap: 3px;
-            }
-
             #keyboard button {
                 padding: 8px;
                 font-size: 0.8em;
@@ -280,9 +273,7 @@
         </div>
     </div>
 
-    
-
-    <!-- Tea Wordle Game Section -->
+       <!-- Tea Wordle Game Section -->
     <div class="tea-wordle-section">
         <h1>Tea Word Mash</h1>
         <div id="message"></div>
@@ -297,139 +288,181 @@
 
     <!-- JavaScript -->
     <script>
-      const words = ['match', 'apple', 'blend', 'herbs', 'spice', 'lemon', 'honey', 'cream', 'minty', 'fresh'];
-      const answer = words[Math.floor(Math.random() * words.length)].toUpperCase();
-      const maxGuesses = 6;
-      let currentGuess = '';
-      let currentRow = 0;
-      let gameOver = false;
+        const words = ['matcha', 'oolong', 'puerh', 'sencha', 'assam', 'keemun', 'rooibos', 'jasmine', 'herbal', 'earlgrey', 'lapsang', 'english', 'chamomile', 'gunpowder'];
+        const answer = words[Math.floor(Math.random() * words.length)].toUpperCase();
+        const wordLength = answer.length;
+        const maxGuesses = 6;
+        let currentGuess = '';
+        let currentRow = 0;
+        let gameOver = false;
 
-      const gridContainer = document.getElementById('grid-container');
-      const message = document.getElementById('message');
+        const gridContainer = document.getElementById('grid-container');
+        const message = document.getElementById('message');
 
-      // Initialize grid
-      function initGrid() {
-          for (let i = 0; i < maxGuesses; i++) {
-              const row = document.createElement('div');
-              row.className = 'grid';
-              for (let j = 0; j < 5; j++) {
-                  const tile = document.createElement('div');
-                  tile.className = 'tile';
-                  row.appendChild(tile);
-              }
-              gridContainer.appendChild(row);
-          }
-      }
+        // Adjust grid styles based on word length
+        const tileSize = wordLength > 6 ? 40 : 60;
+        const tileFontSize = wordLength > 6 ? '1.5em' : '2em';
+        document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
+        document.documentElement.style.setProperty('--tile-font-size', tileFontSize);
 
-      // Create virtual keyboard
-      function initKeyboard() {
-          const keyboard = document.getElementById('keyboard');
-          const keys = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
-          keys.forEach(key => {
-              const button = document.createElement('button');
-              button.textContent = key;
-              button.addEventListener('click', () => handleKeyPress(key));
-              keyboard.appendChild(button);
+        // Initialize grid
+        function initGrid() {
+            for (let i = 0; i < maxGuesses; i++) {
+                const row = document.createElement('div');
+                row.className = 'grid';
+                row.style.gridTemplateColumns = `repeat(${wordLength}, ${tileSize}px)`;
+                for (let j = 0; j < wordLength; j++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.style.width = `${tileSize}px`;
+                    tile.style.height = `${tileSize}px`;
+                    tile.style.lineHeight = `${tileSize}px`;
+                    tile.style.fontSize = tileFontSize;
+                    row.appendChild(tile);
+                }
+                gridContainer.appendChild(row);
+            }
+        }
 
-              if (key === 'P' || key === 'L') {
-                  keyboard.appendChild(document.createElement('br'));
-              }
-          });
-          const enterButton = document.createElement('button');
-          enterButton.textContent = 'Enter';
-          enterButton.addEventListener('click', checkGuess);
-          keyboard.appendChild(enterButton);
+        // Create virtual keyboard
+        function initKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            const keys = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
+            keys.forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.addEventListener('click', () => handleKeyPress(key));
+                keyboard.appendChild(button);
 
-          const deleteButton = document.createElement('button');
-          deleteButton.textContent = 'Delete';
-          deleteButton.addEventListener('click', deleteLetter);
-          keyboard.appendChild(deleteButton);
-      }
+                if (key === 'P' || key === 'L') {
+                    keyboard.appendChild(document.createElement('br'));
+                }
+            });
+            const enterButton = document.createElement('button');
+            enterButton.textContent = 'Enter';
+            enterButton.addEventListener('click', checkGuess);
+            keyboard.appendChild(enterButton);
 
-      // Handle key press
-      function handleKeyPress(letter) {
-          if (gameOver) return;
-          if (currentGuess.length < 5) {
-              currentGuess += letter;
-              updateGrid();
-          }
-      }
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', deleteLetter);
+            keyboard.appendChild(deleteButton);
+        }
 
-      // Update grid display
-      function updateGrid() {
-          const rows = document.getElementsByClassName('grid');
-          const tiles = rows[currentRow].getElementsByClassName('tile');
-          for (let i = 0; i < 5; i++) {
-              tiles[i].textContent = currentGuess[i] ? currentGuess[i] : '';
-          }
-      }
+        // Handle key press
+        function handleKeyPress(letter) {
+            if (gameOver) return;
+            if (currentGuess.length < wordLength) {
+                currentGuess += letter;
+                updateGrid();
+            }
+        }
 
-      // Delete last letter
-      function deleteLetter() {
-          if (gameOver) return;
-          currentGuess = currentGuess.slice(0, -1);
-          updateGrid();
-      }
+        // Update grid display
+        function updateGrid() {
+            const rows = document.getElementsByClassName('grid');
+            const tiles = rows[currentRow].getElementsByClassName('tile');
+            for (let i = 0; i < wordLength; i++) {
+                tiles[i].textContent = currentGuess[i] ? currentGuess[i] : '';
+            }
+        }
 
-      // Check the guess
-      function checkGuess() {
-          if (gameOver) return;
-          if (currentGuess.length < 5) {
-              message.textContent = 'Not enough letters!';
-              return;
-          }
+        // Delete last letter
+        function deleteLetter() {
+            if (gameOver) return;
+            currentGuess = currentGuess.slice(0, -1);
+            updateGrid();
+        }
 
-          const guessArray = currentGuess.split('');
-          const answerArray = answer.split('');
-          const rows = document.getElementsByClassName('grid');
-          const tiles = rows[currentRow].getElementsByClassName('tile');
+        // Check the guess
+        function checkGuess() {
+            if (gameOver) return;
+            if (currentGuess.length < wordLength) {
+                message.textContent = 'Not enough letters!';
+                return;
+            }
 
-          // Color tiles
-          guessArray.forEach((letter, index) => {
-              if (answerArray[index] === letter) {
-                  tiles[index].classList.add('correct');
-                  answerArray[index] = null;
-              }
-          });
+            const guessArray = currentGuess.split('');
+            const answerArray = answer.split('');
+            const rows = document.getElementsByClassName('grid');
+            const tiles = rows[currentRow].getElementsByClassName('tile');
 
-          guessArray.forEach((letter, index) => {
-              if (tiles[index].classList.contains('correct')) return;
-              if (answerArray.includes(letter)) {
-                  tiles[index].classList.add('present');
-                  answerArray[answerArray.indexOf(letter)] = null;
-              } else {
-                  tiles[index].classList.add('absent');
-              }
-          });
+            // Reset letter colors in keyboard
+            const keyboardButtons = document.querySelectorAll('#keyboard button');
 
-          if (currentGuess === answer) {
-              message.textContent = 'You guessed it! Enjoy your tea time!';
-              gameOver = true;
-          } else {
-              currentRow++;
-              currentGuess = '';
-              if (currentRow === maxGuesses) {
-                  message.textContent = `Out of guesses! The word was ${answer}.`;
-                  gameOver = true;
-              }
-          }
-      }
+            // First pass: Check for correct letters in correct positions
+            guessArray.forEach((letter, index) => {
+                if (answerArray[index] === letter) {
+                    tiles[index].classList.add('correct');
+                    answerArray[index] = null;
+                    updateKeyboard(letter, 'correct');
+                }
+            });
 
-      initGrid();
-      initKeyboard();
+            // Second pass: Check for correct letters in wrong positions
+            guessArray.forEach((letter, index) => {
+                if (tiles[index].classList.contains('correct')) return;
+                if (answerArray.includes(letter)) {
+                    tiles[index].classList.add('present');
+                    answerArray[answerArray.indexOf(letter)] = null;
+                    updateKeyboard(letter, 'present');
+                } else {
+                    tiles[index].classList.add('absent');
+                    updateKeyboard(letter, 'absent');
+                }
+            });
 
-      // Listen to keyboard events
-      document.addEventListener('keydown', (e) => {
-          if (gameOver) return;
-          const key = e.key.toUpperCase();
-          if (/^[A-Z]$/.test(key)) {
-              handleKeyPress(key);
-          } else if (key === 'ENTER') {
-              checkGuess();
-          } else if (key === 'BACKSPACE') {
-              deleteLetter();
-          }
-      });
+            if (currentGuess === answer) {
+                message.textContent = 'You guessed it! Enjoy your tea time!';
+                gameOver = true;
+            } else {
+                currentRow++;
+                currentGuess = '';
+                if (currentRow === maxGuesses) {
+                    message.textContent = `Out of guesses! The word was ${answer}.`;
+                    gameOver = true;
+                }
+            }
+        }
+
+        // Update keyboard button colors
+        function updateKeyboard(letter, status) {
+            const buttons = document.querySelectorAll('#keyboard button');
+            buttons.forEach(button => {
+                if (button.textContent === letter) {
+                    if (status === 'correct') {
+                        button.style.backgroundColor = '#6aaa64';
+                        button.style.color = '#fff';
+                    } else if (status === 'present') {
+                        if (button.style.backgroundColor !== 'rgb(106, 170, 100)') {
+                            button.style.backgroundColor = '#c9b458';
+                            button.style.color = '#fff';
+                        }
+                    } else if (status === 'absent') {
+                        if (button.style.backgroundColor !== 'rgb(106, 170, 100)' && button.style.backgroundColor !== 'rgb(201, 180, 88)') {
+                            button.style.backgroundColor = '#787c7e';
+                            button.style.color = '#fff';
+                        }
+                    }
+                }
+            });
+        }
+
+        initGrid();
+        initKeyboard();
+
+        // Listen to keyboard events
+        document.addEventListener('keydown', (e) => {
+            if (gameOver) return;
+            const key = e.key.toUpperCase();
+            if (/^[A-Z]$/.test(key)) {
+                handleKeyPress(key);
+            } else if (key === 'ENTER') {
+                checkGuess();
+            } else if (key === 'BACKSPACE' || key === 'DELETE') {
+                deleteLetter();
+            }
+        });
     </script>
 
 </body>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nigel's Tea - Tea Clicker</title>
+    <link rel="icon" href="../logo.png" type="image/png">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5DC; /* Beige background */
+            color: #4B2E2A; /* Dark brown text */
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #8B4513; /* Saddle brown */
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 10px;
+            position: fixed;
+            width: calc(100% - 40px);
+            top: 10px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .navbar a.logo {
+            display: flex;
+            align-items: center;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto;
+        }
+
+        .navbar a.logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .navbar .menu {
+            display: flex;
+        }
+
+        .navbar .menu a {
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 0 5px;
+        }
+
+        .navbar .menu a:hover {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        .navbar .menu a.active {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        /* Game Container */
+        .game-container {
+            margin-top: 80px; /* Adjust for navbar height */
+            display: flex;
+            height: calc(100% - 80px);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
+            padding: 20px;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .kettle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .kettle {
+            width: 100%;
+            height: 100%;
+            background-image: url('../images/kettle.png'); /* Provide a kettle image */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .tea-count {
+            font-size: 36px;
+            margin-top: 20px;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Upgrade Items */
+        .upgrade {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #FFF8DC; /* Cornsilk background */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #8B4513; /* Saddle brown border */
+            cursor: pointer;
+        }
+
+        .upgrade:hover {
+            background-color: #FFEC8B; /* Light golden background */
+        }
+
+        .upgrade-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .upgrade-cost {
+            font-size: 16px;
+        }
+
+        /* Tea Per Second Display */
+        .tea-per-second {
+            font-size: 18px;
+            margin-top: 10px;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Floating Text Animation */
+        .floating-text {
+            position: absolute;
+            font-size: 24px;
+            color: #4B2E2A;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #8B4513;
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: 200px;
+                box-shadow: none;
+            }
+
+            .game-container {
+                flex-direction: column;
+            }
+
+            .main-content {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="../index.html" class="logo">
+            <img src="../logo.png" alt="Nigel's Tea">
+            Nigel's Tea
+        </a>
+        <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="../games.html" class="active">Games</a>
+            <a href="../projects.html">Projects</a>
+            <a href="../about.html">About Us</a>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <!-- Sidebar for Upgrades -->
+        <div class="sidebar">
+            <h2>Upgrades</h2>
+            <div id="upgrades"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="kettle-container" onclick="brewTea()">
+                <div class="kettle"></div>
+            </div>
+            <div class="tea-count" id="teaCount">0 Cups of Tea</div>
+            <div class="tea-per-second" id="teaPerSecond">per second: 0</div>
+        </div>
+    </div>
+
+    <!-- Game Script -->
+    <script>
+        let teaCount = 0;
+        let teaPerClick = 1;
+
+        let upgrades = [
+            {
+                name: 'Better Kettle',
+                baseCost: 10,
+                cost: 10,
+                amount: 0,
+                teaPerClick: 1,
+            },
+            {
+                name: 'Tea Plantation',
+                baseCost: 100,
+                cost: 100,
+                amount: 0,
+                teaPerSecond: 1,
+            },
+            {
+                name: 'Tea Factory',
+                baseCost: 1000,
+                cost: 1000,
+                amount: 0,
+                teaPerSecond: 10,
+            },
+            {
+                name: 'Tea Empire',
+                baseCost: 10000,
+                cost: 10000,
+                amount: 0,
+                teaPerSecond: 100,
+            },
+            // Add more upgrades as desired
+        ];
+
+        function brewTea() {
+            teaCount += teaPerClick;
+            updateTeaCount();
+            showFloatingText('+' + teaPerClick);
+        }
+
+        function updateTeaCount() {
+            document.getElementById('teaCount').textContent = Math.floor(teaCount) + ' Cups of Tea';
+            updateTeaPerSecond();
+        }
+
+        function updateTeaPerSecond() {
+            let totalTeaPerSecond = upgrades.reduce((sum, upgrade) => {
+                return sum + (upgrade.teaPerSecond || 0) * upgrade.amount;
+            }, 0);
+            document.getElementById('teaPerSecond').textContent = 'per second: ' + totalTeaPerSecond;
+        }
+
+        function buyUpgrade(index) {
+            let upgrade = upgrades[index];
+            if (teaCount >= upgrade.cost) {
+                teaCount -= upgrade.cost;
+                upgrade.amount++;
+                if (upgrade.teaPerClick) {
+                    teaPerClick += upgrade.teaPerClick;
+                }
+                upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.amount));
+                updateUpgrades();
+                updateTeaCount();
+            }
+        }
+
+        function updateUpgrades() {
+            let upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = '';
+            upgrades.forEach((upgrade, index) => {
+                let upgradeDiv = document.createElement('div');
+                upgradeDiv.className = 'upgrade';
+                upgradeDiv.onclick = () => buyUpgrade(index);
+
+                let nameDiv = document.createElement('div');
+                nameDiv.className = 'upgrade-name';
+                nameDiv.textContent = upgrade.name + ' (' + upgrade.amount + ')';
+
+                let costDiv = document.createElement('div');
+                costDiv.className = 'upgrade-cost';
+                costDiv.textContent = 'Cost: ' + upgrade.cost + ' tea';
+
+                upgradeDiv.appendChild(nameDiv);
+                upgradeDiv.appendChild(costDiv);
+
+                upgradesDiv.appendChild(upgradeDiv);
+            });
+        }
+
+        function autoBrew() {
+            upgrades.forEach(upgrade => {
+                if (upgrade.teaPerSecond) {
+                    teaCount += upgrade.teaPerSecond * upgrade.amount / 10; // Divide by 10 for 100ms intervals
+                }
+            });
+            updateTeaCount();
+        }
+
+        // Show Floating Text Animation
+        function showFloatingText(text) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            const kettleContainer = document.querySelector('.kettle-container');
+            kettleContainer.appendChild(floatingText);
+
+            // Position the text randomly within the kettle container
+            floatingText.style.left = Math.random() * 80 + 'px'; // Adjust as needed
+            floatingText.style.top = '150px'; // Adjust as needed
+
+            setTimeout(() => {
+                kettleContainer.removeChild(floatingText);
+            }, 1000);
+        }
+
+        // Start the game loop
+        setInterval(autoBrew, 100); // 100ms intervals
+        updateUpgrades();
+        updateTeaPerSecond();
+    </script>
+</body>
+</html>

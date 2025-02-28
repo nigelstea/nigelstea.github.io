@@ -112,13 +112,16 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
+            width: 100%;
         }
 
+        /* Game Area */
         .game-area {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
+            width: 100%;
         }
 
         /* Canvas Styling */
@@ -171,12 +174,7 @@
         #gameRating {
             font-size: 24px;
             text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Footer (Hidden for full-screen game) */
-        .footer {
-            display: none;
+            margin-top: 10px;
         }
 
         /* Responsive Design */
@@ -196,6 +194,11 @@
                 margin: 5px;
                 padding: 15px;
                 font-size: 20px;
+            }
+
+            /* Adjust rating position */
+            #gameRating {
+                margin-top: 20px;
             }
         }
     </style>
@@ -234,6 +237,8 @@
                         <button id="downBtn">▼</button>
                         <button id="rightBtn">►</button>
                     </div>
+                    <!-- Game Rating -->
+                    <p id="gameRating"></p>
                 </div>
             </div>
 
@@ -241,8 +246,6 @@
             <p id="gameStatus">Tea bags collected: 0/0</p>
             <!-- Game Timer -->
             <p id="gameTimer">Time: 00:00</p>
-            <!-- Game Rating -->
-            <p id="gameRating"></p>
         </div>
     </div>
 

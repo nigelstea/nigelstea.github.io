@@ -126,9 +126,7 @@
             border: 5px solid #8B4513;
             border-radius: 10px;
             background-color: #FFFFFF;
-            width: auto;
-            height: auto;
-            max-width: 80%;
+            max-width: 100%;
             max-height: 100%;
         }
 
@@ -230,11 +228,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        © 2025 Nigel's Tea. All rights reserved.
-    </div>
-
     <!-- Game Script -->
     <script>
         // Canvas and Context
@@ -287,11 +280,24 @@
         function resizeCanvas() {
             const container = document.querySelector('.game-area');
             const controlsWidth = document.querySelector('.controls').offsetWidth;
-            const availableWidth = container.clientWidth - controlsWidth - 40; // Padding
-            const availableHeight = container.clientHeight - 40; // Padding
-            const size = Math.min(availableWidth, availableHeight);
+            const containerPadding = 40; // Total horizontal padding/margins
+            const availableWidth = container.clientWidth - controlsWidth - containerPadding;
+            const availableHeight = container.clientHeight - containerPadding;
+
+            // Calculate the new size
+            let size = Math.min(availableWidth, availableHeight);
+
+            // Set minimum and maximum canvas sizes
+            const minSize = 450; // Minimum canvas size
+            const maxSize = 800; // Maximum canvas size
+
+            // Adjust size within the min and max bounds
+            size = Math.max(minSize, Math.min(size, maxSize));
+
+            // Set canvas dimensions
             canvas.width = size;
             canvas.height = size;
+
             tileSize = size / tileCount;
             drawGame();
         }

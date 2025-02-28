@@ -8,11 +8,10 @@
         /* Global Styles */
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         html, body {
+            margin: 0;
             height: 100%;
             overflow: hidden; /* Prevent scrolling */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -31,27 +30,17 @@
             scrollbar-width: none;  /* Firefox */
         }
 
-        /* Variables for Consistent Spacing */
-        :root {
-            --padding-small: 10px;
-            --padding-medium: 15px;
-            --padding-large: 20px;
-            --margin-small: 10px;
-            --margin-medium: 15px;
-            --margin-large: 20px;
-        }
-
         /* Navigation Bar */
         .navbar {
             background-color: #8B4513; /* Saddle brown */
             display: flex;
             align-items: center;
-            padding: var(--padding-medium) var(--padding-large);
+            padding: 10px 20px;
             border-radius: 10px;
             position: fixed;
-            width: calc(100% - 2 * var(--margin-large));
-            top: var(--margin-large);
-            left: var(--margin-large);
+            width: calc(100% - 40px);
+            top: 10px;
+            left: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
         }
@@ -68,7 +57,7 @@
 
         .navbar a.logo img {
             height: 50px;
-            margin-right: var(--margin-medium);
+            margin-right: 10px;
         }
 
         .navbar .menu {
@@ -78,16 +67,16 @@
         .navbar .menu a {
             color: #FFFFFF;
             text-align: center;
-            padding: var(--padding-small) var(--padding-medium);
+            padding: 14px 20px;
             text-decoration: none;
             font-size: 18px;
             border-radius: 10px;
-            margin: 0 var(--margin-small);
+            margin: 0 5px;
         }
 
         .navbar .menu a:hover {
-            background-color: #6B3A0E; /* Darker brown */
-            color: #FFDAB9; /* Light peach */
+            background-color: #6B3A0E;
+            color: #FFDAB9;
         }
 
         .navbar .menu a.active {
@@ -98,21 +87,20 @@
         /* Game Container */
         .game-container {
             position: absolute;
-            top: calc(80px + var(--margin-large)); /* Adjust for navbar height and margin */
-            bottom: var(--margin-large);
-            left: var(--margin-large);
-            right: var(--margin-large);
+            top: 80px; /* Adjust for navbar height */
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0 var(--padding-large);
         }
 
         /* Game Title */
         .game-title {
             font-size: 36px;
-            margin-bottom: var(--margin-large);
+            margin-bottom: 20px;
             font-family: 'Georgia', serif;
             text-align: center;
         }
@@ -124,16 +112,13 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            width: 100%;
         }
 
-        /* Game Area */
         .game-area {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            width: 100%;
         }
 
         /* Canvas Styling */
@@ -147,19 +132,18 @@
 
         /* Game Controls */
         .controls {
-            margin-left: var(--margin-large);
+            margin-left: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: var(--padding-small);
         }
 
         .controls button {
             background-color: #8B4513;
             color: #FFFFFF;
             border: none;
-            padding: var(--padding-medium);
-            margin: var(--margin-small);
+            padding: 15px 20px;
+            margin: 5px;
             font-size: 24px;
             border-radius: 10px;
             cursor: pointer;
@@ -173,46 +157,45 @@
         #gameStatus {
             font-size: 18px;
             text-align: center;
-            margin-top: var(--margin-medium);
+            margin-top: 20px;
         }
 
         /* Game Timer */
         #gameTimer {
             font-size: 18px;
             text-align: center;
-            margin-top: var(--margin-small);
+            margin-top: 10px;
         }
 
         /* Rating Display */
         #gameRating {
             font-size: 24px;
             text-align: center;
-            margin-top: var(--margin-small);
+            margin-top: 20px;
+        }
+
+        /* Footer (Hidden for full-screen game) */
+        .footer {
+            display: none;
         }
 
         /* Responsive Design */
         @media screen and (max-width: 768px) {
             .game-area {
                 flex-direction: column;
-                margin-top: var(--margin-large);
+                margin-top: 20px;
             }
 
             .controls {
                 flex-direction: row;
                 margin-left: 0;
-                margin-top: var(--margin-large);
-                padding: 0;
+                margin-top: 20px;
             }
 
             .controls button {
-                margin: var(--margin-small);
-                padding: var(--padding-medium);
+                margin: 5px;
+                padding: 15px;
                 font-size: 20px;
-            }
-
-            /* Adjust rating position */
-            #gameRating {
-                margin-top: var(--margin-large);
             }
         }
     </style>
@@ -251,8 +234,6 @@
                         <button id="downBtn">▼</button>
                         <button id="rightBtn">►</button>
                     </div>
-                    <!-- Game Rating -->
-                    <p id="gameRating"></p>
                 </div>
             </div>
 
@@ -260,14 +241,318 @@
             <p id="gameStatus">Tea bags collected: 0/0</p>
             <!-- Game Timer -->
             <p id="gameTimer">Time: 00:00</p>
+            <!-- Game Rating -->
+            <p id="gameRating"></p>
         </div>
     </div>
 
     <!-- Game Script -->
-    <!-- [JavaScript code remains unchanged] -->
     <script>
-        // JavaScript code from the previous version remains the same
-        // For brevity, it's not repeated here
+        // Canvas and Context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Settings
+        let tileCount = 21; // Must be odd for maze generation
+        let tileSize;
+
+        // Player Object
+        const player = {
+            x: 1,
+            y: 1,
+            color: '#4B2E2A',
+        };
+
+        // Teapot Position
+        const teapot = {
+            x: tileCount - 2,
+            y: tileCount - 2,
+            color: '#8B4513',
+        };
+
+        // Tea Bags Array
+        let teaBags = [];
+
+        // Maze Grid
+        let maze = [];
+
+        // Game Status
+        let collectedTeaBags = 0;
+        let totalTeaBags = Math.floor(Math.random() * 20) + 1; // 1 to 20
+
+        // Stopwatch Variables
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+
+        // Initialize Game
+        function initGame() {
+            generateMaze();
+            placeTeaBags();
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            document.addEventListener('keydown', keyDownHandler);
+            document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
+            document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
+            document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
+            document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
+            updateStatus();
+            startTimer();
+        }
+
+        // Start the Stopwatch
+        function startTimer() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTimer, 100);
+        }
+
+        // Update the Stopwatch Display
+        function updateTimer() {
+            elapsedTime = Date.now() - startTime;
+            const time = formatTime(elapsedTime);
+            document.getElementById('gameTimer').textContent = `Time: ${time}`;
+        }
+
+        // Format Time as MM:SS
+        function formatTime(time) {
+            const totalSeconds = Math.floor(time / 1000);
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        // Stop the Stopwatch
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Resize Canvas Based on Window Size
+        function resizeCanvas() {
+            const container = document.querySelector('.game-area');
+            const controlsWidth = document.querySelector('.controls').offsetWidth;
+            const containerPadding = 40; // Total horizontal padding/margins
+            const availableWidth = container.clientWidth - controlsWidth - containerPadding;
+            const availableHeight = container.clientHeight - containerPadding;
+
+            // Calculate the new size
+            let size = Math.min(availableWidth, availableHeight);
+
+            // Set minimum and maximum canvas sizes
+            const minSize = 450; // Minimum canvas size
+            const maxSize = 800; // Maximum canvas size
+
+            // Adjust size within the min and max bounds
+            size = Math.max(minSize, Math.min(size, maxSize));
+
+            // Set canvas dimensions
+            canvas.width = size;
+            canvas.height = size;
+
+            tileSize = size / tileCount;
+            drawGame();
+        }
+
+        // Generate Maze using Recursive Backtracker Algorithm
+        function generateMaze() {
+            // Initialize maze grid with walls
+            for (let y = 0; y < tileCount; y++) {
+                maze[y] = [];
+                for (let x = 0; x < tileCount; x++) {
+                    maze[y][x] = 1; // Wall
+                }
+            }
+
+            // Carve passages
+            function carvePassage(x, y) {
+                const directions = shuffle([
+                    { x: 0, y: -2 },
+                    { x: 2, y: 0 },
+                    { x: 0, y: 2 },
+                    { x: -2, y: 0 },
+                ]);
+
+                directions.forEach(dir => {
+                    const nx = x + dir.x;
+                    const ny = y + dir.y;
+
+                    if (nx > 0 && nx < tileCount - 1 && ny > 0 && ny < tileCount - 1 && maze[ny][nx] === 1) {
+                        maze[ny][nx] = 0;
+                        maze[y + dir.y / 2][x + dir.x / 2] = 0;
+                        carvePassage(nx, ny);
+                    }
+                });
+            }
+
+            maze[player.y][player.x] = 0;
+            carvePassage(player.x, player.y);
+            maze[teapot.y][teapot.x] = 0;
+        }
+
+        // Shuffle an array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Place Tea Bags Randomly
+        function placeTeaBags() {
+            let placed = 0;
+            while (placed < totalTeaBags) {
+                let x = Math.floor(Math.random() * (tileCount - 2)) + 1;
+                let y = Math.floor(Math.random() * (tileCount - 2)) + 1;
+                if (maze[y][x] === 0 && !(x === player.x && y === player.y) && !(x === teapot.x && y === teapot.y)) {
+                    // Ensure no duplicate tea bags
+                    if (!teaBags.some(bag => bag.x === x && bag.y === y)) {
+                        teaBags.push({ x: x, y: y });
+                        placed++;
+                    }
+                }
+            }
+        }
+
+        // Draw Game Elements
+        function drawGame() {
+            // Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Maze
+            for (let y = 0; y < tileCount; y++) {
+                for (let x = 0; x < tileCount; x++) {
+                    if (maze[y][x] === 1) {
+                        ctx.fillStyle = '#D2B48C'; // Tan walls
+                        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    }
+                }
+            }
+
+            // Draw Tea Bags
+            teaBags.forEach(bag => {
+                ctx.fillStyle = '#DAA520'; // Golden tea bags
+                ctx.beginPath();
+                ctx.arc(bag.x * tileSize + tileSize / 2, bag.y * tileSize + tileSize / 2, tileSize / 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw Teapot
+            ctx.fillStyle = teapot.color;
+            ctx.fillRect(teapot.x * tileSize, teapot.y * tileSize, tileSize, tileSize);
+
+            // Draw Player
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x * tileSize, player.y * tileSize, tileSize, tileSize);
+        }
+
+        // Handle Keyboard Input
+        function keyDownHandler(e) {
+            if (e.key === 'ArrowUp' || e.key === 'w') movePlayer(0, -1);
+            if (e.key === 'ArrowDown' || e.key === 's') movePlayer(0, 1);
+            if (e.key === 'ArrowLeft' || e.key === 'a') movePlayer(-1, 0);
+            if (e.key === 'ArrowRight' || e.key === 'd') movePlayer(1, 0);
+        }
+
+        // Move Player Function
+        function movePlayer(dx, dy) {
+            let newX = player.x + dx;
+            let newY = player.y + dy;
+
+            // Check boundaries and walls
+            if (
+                newX >= 0 && newX < tileCount &&
+                newY >= 0 && newY < tileCount &&
+                maze[newY][newX] === 0
+            ) {
+                player.x = newX;
+                player.y = newY;
+
+                // Check for tea bag collection
+                for (let i = 0; i < teaBags.length; i++) {
+                    if (teaBags[i].x === player.x && teaBags[i].y === player.y) {
+                        teaBags.splice(i, 1);
+                        collectedTeaBags++;
+                        updateStatus();
+                        break;
+                    }
+                }
+
+                // Check if player reaches teapot
+                if (player.x === teapot.x && player.y === teapot.y) {
+                    if (collectedTeaBags === totalTeaBags) {
+                        stopTimer();
+                        const time = formatTime(elapsedTime);
+                        document.getElementById('gameStatus').textContent = 'You delivered all the tea bags! Well done!';
+                        document.getElementById('gameTimer').textContent = `Total Time: ${time}`;
+                        document.removeEventListener('keydown', keyDownHandler);
+                        disableControls();
+                        displayRating();
+                    } else {
+                        document.getElementById('gameStatus').textContent = `You need to collect all the tea bags before delivering them! Tea bags remaining: ${totalTeaBags - collectedTeaBags}`;
+                    }
+                }
+
+                drawGame();
+            }
+        }
+
+        // Display Star Rating
+        function displayRating() {
+            const totalSeconds = Math.floor(elapsedTime / 1000);
+            const rating = calculateStarRating(totalSeconds, totalTeaBags);
+            document.getElementById('gameRating').textContent = `Your Rating: ${rating}`;
+        }
+
+        // Calculate Star Rating Based on Time and Tea Bags
+        function calculateStarRating(timeInSeconds, teaBags) {
+            // Define base time per tea bag (in seconds)
+            const baseTimePerBag = 10; // Adjust as needed
+
+            // Calculate maximum time for 5 stars
+            const maxTime = teaBags * baseTimePerBag;
+
+            // Define thresholds for star ratings
+            const thresholds = {
+                5: maxTime * 0.6, // 60% of max time
+                4: maxTime * 0.8, // 80%
+                3: maxTime,       // 100%
+                2: maxTime * 1.2, // 120%
+                1: maxTime * 1.5  // 150%
+            };
+
+            // Determine rating
+            let stars = 1;
+            if (timeInSeconds <= thresholds[5]) {
+                stars = 5;
+            } else if (timeInSeconds <= thresholds[4]) {
+                stars = 4;
+            } else if (timeInSeconds <= thresholds[3]) {
+                stars = 3;
+            } else if (timeInSeconds <= thresholds[2]) {
+                stars = 2;
+            }
+
+            // Generate star emojis
+            const starEmojis = '⭐'.repeat(stars);
+
+            return starEmojis;
+        }
+
+        // Disable On-Screen Controls
+        function disableControls() {
+            document.getElementById('upBtn').disabled = true;
+            document.getElementById('downBtn').disabled = true;
+            document.getElementById('leftBtn').disabled = true;
+            document.getElementById('rightBtn').disabled = true;
+        }
+
+        // Update Game Status
+        function updateStatus() {
+            document.getElementById('gameStatus').textContent = `Tea bags collected: ${collectedTeaBags}/${totalTeaBags}`;
+        }
+
+        // Start the Game
+        initGame();
     </script>
 </body>
 </html>

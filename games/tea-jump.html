@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nigel's Tea - Tea Jump</title>
+    <link rel="icon" href="../logo.png" type="image/png">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5DC; /* Beige background */
+            color: #4B2E2A; /* Dark brown text */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #8B4513; /* Saddle brown */
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: calc(100% - 40px);
+            top: 10px;
+            left: 20px;
+            z-index: 1000;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a.logo {
+            display: flex;
+            align-items: center;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto;
+        }
+
+        .navbar a.logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .navbar .menu {
+            display: flex;
+        }
+
+        .navbar .menu a {
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 0 5px;
+        }
+
+        .navbar .menu a:hover {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        .navbar .menu a.active {
+            background-color: #6B3A0E;
+            color: #FFDAB9;
+        }
+
+        /* Games Section */
+        .games-section {
+            background-color: rgba(210, 180, 140, 0.9); /* Mica-inspired effect */
+            padding: 60px 20px; /* Adjusted padding */
+            text-align: center;
+            margin-top: 100px; /* Adjust for navbar height */
+            border-radius: 10px;
+            margin: 20px;
+            overflow: auto;
+        }
+
+        .games-section h1 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            font-family: 'Georgia', serif;
+        }
+
+        .game-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .game-buttons a {
+            background-color: #8B4513;
+            color: #FFFFFF;
+            padding: 20px 40px;
+            text-decoration: none;
+            font-size: 24px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .game-buttons a:hover {
+            background-color: #6B3A0E;
+            transform: translateY(-5px);
+            color: #FFDAB9;
+        }
+
+        /* Runner Game Section */
+        .runner-game-section {
+            background-color: rgba(210, 180, 140, 0.9); /* Match the games section */
+            padding: 60px 20px; /* Adjusted padding */
+            text-align: center;
+            margin: 20px;
+            border-radius: 10px;
+            overflow: auto;
+            position: relative;
+        }
+
+        .runner-game-section h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #4B2E2A;
+        }
+
+        /* Game Canvas */
+        #gameCanvas {
+            background-color: #F5F5DC;
+            border: 2px solid #8B4513;
+            border-radius: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #8B4513;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 20px; /* Footer padding */
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        /* Responsive Design Adjustments */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar .menu {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .navbar .menu a {
+                width: 100%;
+                text-align: left;
+                margin: 5px 0;
+            }
+
+            .navbar a.logo {
+                margin-bottom: 10px;
+            }
+
+            .games-section h1 {
+                font-size: 36px;
+            }
+
+            .game-buttons a {
+                font-size: 20px;
+                padding: 15px 30px;
+            }
+
+            .runner-game-section {
+                padding: 40px 10px; /* Adjusted for responsive */
+            }
+
+            .runner-game-section h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="../index.html" class="logo">
+            <img src="../logo.png" alt="Nigel's Tea">
+            Nigel's Tea
+        </a>
+        <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="../games.html" class="active">Games</a>
+            <a href="../projects.html">Projects</a>
+            <a href="../about.html">About Us</a>
+        </div>
+    </div>
+
+ 
+
+    <!-- Runner Game Section -->
+    <div class="runner-game-section">
+        <h1>Tea Jump</h1>
+        <canvas id="gameCanvas" width="800" height="200"></canvas>
+        <p id="gameInstructions">Press Space or tap to jump. Avoid soft drinks and baristas!</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 Nigel's Tea. All rights reserved.
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Get canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game variables
+        let tea = {
+            x: 50,
+            y: 150,
+            width: 50,
+            height: 50,
+            dy: 0,
+            gravity: 0.5,
+            jumpStrength: -10,
+            isJumping: false
+        };
+
+        let obstacles = [];
+        let obstacleFrequency = 1500;
+        let lastObstacleTime = 0;
+        let gameSpeed = 5;
+        let gameOver = false;
+        let score = 0;
+
+        // Load emoji images
+        const teaImg = new Image();
+        teaImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABdElEQVRoge2Z7U3DMBCFfxhaEVxIKbsAPGFY6BhVggI00AV1Agg64kQqZIyBJIlJIdKHwpCNpj2VA0Cgy9uxgm/Hb/Pp5dk+lGM+SM9IdKAnCQIYB6hl81WhjERH/FqGLzfA0icvebAMV4CD6DyoReA3F6EimEA3/KywlQzFwULegXYB3gE81V8l2OziBiYHUWgQkgUOJA8WOzVfAG8AC3VExADsxentcAA99p+AH4Y8j9APzFudaY5e2PGIABijGH3AAOEjjAEyrdhVQL5ZweUVozsYDfQydGfDKxJyhBoCbaarIO3eYUDdqnBprUfWBiKK96cfaEMMaAuh1KDLC4JUU3AClKziJkPDeVISAqGH2edJIoPAmjVLtaR0SSTCw2q8VpeDixYsPfU0obWFT8AKMwIY6kHQTZ072FbCTrVTD1xZ+cnU8gZtMCSDQW4gZq3QNniAkw+wEySy4iYAcHjBJYIWoctCHYBDApsE/AEN0g8ClEAZttwAAAABJRU5ErkJggg=='; // Tea emoji
+
+        const softDrinkImg = new Image();
+        softDrinkImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABFElEQVRoge3YsQnCQBBG4fNkgFdNdpKgQtRUiRZlQwSXblCoIiXIjIARjfxVbAkV48fm33h3SPk9m+an1kAQAAAAAAAAAAAAAAgP1bAHnCTsIMDSDuZaBFAGzuGeAlC/sI6AVAL20r8LWJ94B2A46k/qXSl4BIgdUWQb4l2ASCNJZBnBJwDSAilqB3A6gakZe4fFLlGs2V14ZcBNwKc/kGfBJyA6MI5gF7J/AdoGO1OpTto0+JcAvsCD/JX0TKszzG+GR+YkzG2r+w+AAnAAAAAAAAAAAAAACAbX85GFdwffRgVCAAAAAASUVORK5CYII='; // Soft drink emoji
+
+        const baristaImg = new Image();
+        baristaImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABOElEQVRoge3WsQnCQBBG4e8SQU1F0liKQttQo9GFojQYLrAUn7Hy+eZzM2e3fyVOK8tQAAAAAAAAAAAAAAAPgmQAgbap7gJXCWvEPgLGBawCQhugFgBVgtwHQD1gX5B2APWAfkHJMtjpRKhBlwL3AtcFYwEAp7id4C3AzsCHAIu3V1gC+B31xgO+As0kHrkacAVejz4GYEXBnAw6dUAzDRA1zGYD0LQEKK0CTXc/h/gWgLJZAFHEH0BTQVKEHsCHHNhuDLwBZ1RzwAr3vUrW3N4Jd/CfUJf47lxa5YkSmX6hPgA5QAAAAAAAAAAAAAAgC+YTQ5ZG2D0TiAAAAAElFTkSuQmCC'; // Placeholder for barista
+
+        // Handle user input
+        document.addEventListener('keydown', function(event) {
+            if ((event.code === 'Space' || event.code === 'ArrowUp') && !tea.isJumping) {
+                tea.dy = tea.jumpStrength;
+                tea.isJumping = true;
+            }
+        });
+
+        canvas.addEventListener('mousedown', function() {
+            if (!tea.isJumping) {
+                tea.dy = tea.jumpStrength;
+                tea.isJumping = true;
+            }
+        });
+
+        // Game loop
+        function gameLoop(timestamp) {
+            if (gameOver) {
+                displayGameOver();
+                return;
+            }
+
+            requestAnimationFrame(gameLoop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update tea position
+            tea.y += tea.dy;
+            tea.dy += tea.gravity;
+            if (tea.y > 150) {
+                tea.y = 150;
+                tea.dy = 0;
+                tea.isJumping = false;
+            }
+
+            // Draw tea
+            ctx.drawImage(teaImg, tea.x, tea.y, tea.width, tea.height);
+
+            // Handle obstacles
+            if (timestamp - lastObstacleTime > obstacleFrequency) {
+                createObstacle();
+                lastObstacleTime = timestamp;
+            }
+
+            obstacles.forEach(function(obstacle, index) {
+                obstacle.x -= gameSpeed;
+                ctx.drawImage(obstacle.img, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+                // Collision detection
+                if (isColliding(tea, obstacle)) {
+                    gameOver = true;
+                }
+
+                // Remove off-screen obstacles
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacles.splice(index, 1);
+                    score++;
+                }
+            });
+
+            // Display score
+            ctx.font = '20px Arial';
+            ctx.fillStyle = '#4B2E2A';
+            ctx.fillText('Score: ' + score, canvas.width - 120, 30);
+        }
+
+        // Create obstacles
+        function createObstacle() {
+            let obstacleType = Math.random() > 0.5 ? 'softDrink' : 'barista';
+            let obstacleImg = obstacleType === 'softDrink' ? softDrinkImg : baristaImg;
+            let obstacleWidth = 50;
+            let obstacleHeight = 50;
+            let obstacle = {
+                x: canvas.width,
+                y: 150,
+                width: obstacleWidth,
+                height: obstacleHeight,
+                img: obstacleImg
+            };
+            obstacles.push(obstacle);
+        }
+
+        // Collision detection
+        function isColliding(a, b) {
+            return (
+                a.x < b.x + b.width &&
+                a.x + a.width > b.x &&
+                a.y < b.y + b.height &&
+                a.y + a.height > b.y
+            );
+        }
+
+        // Display Game Over
+        function displayGameOver() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '40px Arial';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2 - 20);
+            ctx.fillText('Score: ' + score, canvas.width / 2, canvas.height / 2 + 30);
+            ctx.font = '20px Arial';
+            ctx.fillText('Refresh to Play Again', canvas.width / 2, canvas.height / 2 + 70);
+        }
+
+        // Start the game loop
+        requestAnimationFrame(gameLoop);
+    </script>
+
+</body>
+</html>

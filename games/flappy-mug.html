@@ -90,6 +90,42 @@
             background-color: #ADD8E6;
         }
 
+        /* Start Screen */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(139, 69, 19, 0.9); /* Saddle brown with opacity */
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 2000;
+        }
+
+        #start-screen h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #start-screen button {
+            background-color: #FFDAB9; /* Light peach */
+            color: #4B2E2A;
+            border: none;
+            padding: 15px 30px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #start-screen button:hover {
+            background-color: #FFE4C4; /* Bisque */
+        }
+
         /* Game Over Message */
         #game-over {
             position: absolute;
@@ -103,6 +139,7 @@
             text-align: center;
             font-size: 24px;
             display: none;
+            z-index: 2000;
         }
 
         #game-over button {
@@ -140,6 +177,12 @@
     <!-- Game Container -->
     <div id="game-container">
         <canvas id="gameCanvas" width="480" height="640"></canvas>
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1>Flappy Mug</h1>
+            <button onclick="startGame()">Play</button>
+        </div>
+        <!-- Game Over Screen -->
         <div id="game-over">
             <p>Game Over</p>
             <p>Your Score: <span id="final-score">0</span></p>
@@ -158,164 +201,26 @@
         let mugX = canvas.width / 4;
         let mugY = canvas.height / 2;
         let mugVelocity = 0;
-
-        // Adjusted Gravity and Jump Strength for Easier Gameplay
-        const gravity = 0.2;          // Reduced gravity for smoother gliding
-        const jumpStrength = -6;      // Adjusted jump strength to balance
+        const gravity = 0.2;
+        const jumpStrength = -6;
 
         // Pipes
         let pipes = [];
         const pipeWidth = 60;
-        const pipeGap = 200;          // Increased gap between pipes
-        const pipeVelocity = 1.5;     // Reduced pipe speed
+        const pipeGap = 200;
+        const pipeVelocity = 1.5;
         let pipeSpawnTimer = 0;
-        const pipeSpawnInterval = 100; // Increased interval between pipe spawns
+        const pipeSpawnInterval = 100; // frames
 
         // Score
         let score = 0;
         let gameOver = false;
+        let gameStarted = false; // Track if the game has started
 
-        // Game Over Screen
+        // Game Screens
+        const startScreen = document.getElementById('start-screen');
         const gameOverScreen = document.getElementById('game-over');
         const finalScore = document.getElementById('final-score');
 
         // Event Listeners
         document.addEventListener('keydown', handleKeyDown);
-        canvas.addEventListener('click', flap);
-
-        // Touch support for mobile devices
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            flap();
-        });
-
-        function handleKeyDown(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                flap();
-            }
-        }
-
-        function flap() {
-            if (!gameOver) {
-                mugVelocity = jumpStrength;
-            }
-        }
-
-        function restartGame() {
-            mugX = canvas.width / 4;
-            mugY = canvas.height / 2;
-            mugVelocity = 0;
-            pipes = [];
-            score = 0;
-            gameOver = false;
-            gameOverScreen.style.display = 'none';
-            animate();
-        }
-
-        function spawnPipe() {
-            const minPipeHeight = 50;
-            const maxPipeHeight = canvas.height - pipeGap - minPipeHeight;
-            const pipeTopHeight = Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) + minPipeHeight;
-            const pipeBottomY = pipeTopHeight + pipeGap;
-            pipes.push({
-                x: canvas.width,
-                top: {
-                    y: 0,
-                    height: pipeTopHeight,
-                },
-                bottom: {
-                    y: pipeBottomY,
-                    height: canvas.height - pipeBottomY,
-                },
-                passed: false,
-            });
-        }
-
-        function update() {
-            mugVelocity += gravity;
-            mugY += mugVelocity;
-
-            // Keep mug within canvas vertically
-            if (mugY < 0) {
-                mugY = 0;
-                mugVelocity = 0;
-            }
-            if (mugY + mugSize > canvas.height) {
-                mugY = canvas.height - mugSize;
-                gameOver = true;
-            }
-
-            // Pipes movement and collision
-            for (let i = pipes.length - 1; i >= 0; i--) {
-                const pipe = pipes[i];
-                pipe.x -= pipeVelocity;
-
-                // Collision detection
-                if (
-                    (mugX + mugSize > pipe.x && mugX < pipe.x + pipeWidth) &&
-                    (mugY < pipe.top.height || mugY + mugSize > pipe.bottom.y)
-                ) {
-                    gameOver = true;
-                }
-
-                // Increment score
-                if (!pipe.passed && pipe.x + pipeWidth < mugX) {
-                    score++;
-                    pipe.passed = true;
-                }
-
-                // Remove off-screen pipes
-                if (pipe.x + pipeWidth < 0) {
-                    pipes.splice(i, 1);
-                }
-            }
-
-            // Spawn new pipes
-            pipeSpawnTimer++;
-            if (pipeSpawnTimer >= pipeSpawnInterval) {
-                spawnPipe();
-                pipeSpawnTimer = 0;
-            }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Mug Emoji
-            ctx.font = mugSize + 'px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            ctx.fillText(mugEmoji, mugX + mugSize / 2, mugY);
-
-            // Draw Pipes
-            ctx.fillStyle = '#228B22'; // Forest Green
-            pipes.forEach(pipe => {
-                // Top Pipe
-                ctx.fillRect(pipe.x, pipe.top.y, pipeWidth, pipe.top.height);
-                // Bottom Pipe
-                ctx.fillRect(pipe.x, pipe.bottom.y, pipeWidth, pipe.bottom.height);
-            });
-
-            // Draw Score
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '24px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('Score: ' + score, 10, 10);
-        }
-
-        function animate() {
-            if (!gameOver) {
-                update();
-                draw();
-                requestAnimationFrame(animate);
-            } else {
-                finalScore.textContent = score;
-                gameOverScreen.style.display = 'block';
-            }
-        }
-
-        // Start Game
-        animate();
-    </script>
-</body>
-</html>

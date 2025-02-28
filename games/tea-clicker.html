@@ -78,7 +78,6 @@
             margin-top: 80px; /* Adjust for navbar height */
             display: flex;
             height: calc(100% - 80px);
-            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         /* Sidebar */
@@ -123,7 +122,6 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            /* Removed overflow: hidden; to allow tooltips to be visible */
         }
 
         .kettle-container {
@@ -204,6 +202,7 @@
             transition: opacity 0.3s;
         }
 
+        /* Tooltip Arrow */
         .upgrade-description::after {
             content: "";
             position: absolute;
@@ -215,6 +214,19 @@
             border-color: #8B4513 transparent transparent transparent;
         }
 
+        /* Special Styling for Better Kettle Tooltip */
+        .better-kettle .upgrade-description {
+            bottom: auto;
+            top: 120%;
+        }
+
+        .better-kettle .upgrade-description::after {
+            top: -16px;
+            bottom: auto;
+            border-color: transparent transparent #8B4513 transparent;
+        }
+
+        /* Show Tooltip on Hover */
         .upgrade:hover .upgrade-description {
             visibility: visible;
             opacity: 1;
@@ -311,6 +323,17 @@
             }
 
             .upgrade-description::after {
+                top: -16px;
+                bottom: auto;
+                border-color: transparent transparent #8B4513 transparent;
+            }
+
+            /* Override for Better Kettle Tooltip on Mobile */
+            .better-kettle .upgrade-description {
+                top: 110%;
+            }
+
+            .better-kettle .upgrade-description::after {
                 top: -16px;
                 border-color: transparent transparent #8B4513 transparent;
             }
@@ -478,6 +501,11 @@
                 let upgradeDiv = document.createElement('div');
                 upgradeDiv.className = 'upgrade';
                 upgradeDiv.onclick = () => buyUpgrade(index);
+
+                // Add special class for Better Kettle
+                if (upgrade.name === 'Better Kettle') {
+                    upgradeDiv.classList.add('better-kettle');
+                }
 
                 let headerDiv = document.createElement('div');
                 headerDiv.className = 'upgrade-header';
